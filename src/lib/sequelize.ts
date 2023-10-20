@@ -3,11 +3,11 @@ import { Sequelize } from "sequelize";
 const sequelizeClientSingleton = () => {
   return new Sequelize({
     dialect: "oracle",
-    host: "192.168.2.101",
-    username: "mes",
-    password: "VeDen_2023",
-    database: "TEST",
-    port: 1521,
+    host: process.env.DB_HOST,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: Number(process.env.DB_PORT),
     dialectModule: require("oracledb"),
   });
 };
