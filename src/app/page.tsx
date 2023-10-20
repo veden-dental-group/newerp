@@ -43,12 +43,43 @@ export default function Home() {
     }
   };
 
+  const exportHandler = async () => {
+    if (entries.length === 0 || hasError) return;
+
+    const res = await fetch("/api/report", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        headers,
+        entries,
+      }),
+    });
+
+    const blob = await res.blob();
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "report.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="flex flex-row items-center w-full gap-6">
         <Textarea disabled={isLoading} ref={inputRef} />
         <Button disabled={isLoading} onClick={submitHandler}>
           Submit
+        </Button>
+        <Button
+          disabled={isLoading || entries.length === 0 || !!hasError}
+          onClick={exportHandler}
+        >
+          Export
         </Button>
       </div>
       {isLoading ? (
