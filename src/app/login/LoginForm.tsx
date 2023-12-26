@@ -35,9 +35,12 @@ const LoginForm: React.FC<Props> = ({ showForget, setShowForget }) => {
   });
 
   const loginHandler = async (values: z.infer<typeof formSchema>) => {
-    signIn("credentials", { ...values, callbackUrl: "/dashboard" }).then(
-      (error) => console.error(error)
-    );
+    try {
+      const res = await signIn('credentials', { ...values, redirect: false, callbackUrl: '/home' });
+      if (!res) throw new Error('credentials api crashed.');
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <Form {...form}>
@@ -53,6 +56,7 @@ const LoginForm: React.FC<Props> = ({ showForget, setShowForget }) => {
           src="/img/veden_logo.png"
           width="224"
           height="80"
+          priority
         />
         <div className="text-center text-2xl text-primary md:text-4xl">
           Login Your Account

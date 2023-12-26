@@ -15,7 +15,12 @@ module.exports = {
         "2xl": "1400px",
       },
     },
-    extend: {
+    extend: {      
+      dropShadow: {
+        container: '0.4rem 0.4rem 0.5rem rgba(0, 0, 0, 0.25)',
+        inputs: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        spread: '0.3rem 0.3rem 0 rgba(49, 63, 106, 0.2)',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -20,18 +20,8 @@ export default function Home() {
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 
 	const submitTEST = async () => {
-		const input = inputRef.current!.value.trim();
-		if (!input) return;
 		setIsLoading(true);
-		const res = await fetch("/api/query/procedure", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				input,
-			}),
-		});
+		const res = await fetch("/api/oracle/om/customer");
 		const { status, result } = await res.json();
 		setIsLoading(false);
 		if (status === 200) {

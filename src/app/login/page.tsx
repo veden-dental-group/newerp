@@ -10,7 +10,7 @@ export default function Login() {
   const [toggle, setToggle] = useState(false);
   const [showForget, setShowForget] = useState(false);
   const session = useSession();
-  if (session?.data?.user) redirect("/dashboard");
+  if (session?.data?.user) redirect("/home");
   useEffect(() => {
     if (toggle == false) setShowForget(false);
   }, [toggle]);
