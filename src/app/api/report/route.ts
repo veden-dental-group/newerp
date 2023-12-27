@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import XLSX from "xlsx";
 
 export const POST = async (req: Request) => {
-  const { headers, entries } = await req.json();
+  const { headers, entries }: {headers: any[], entries:any[] } = await req.json();
 
   const ws_data = [
     [...headers.map((header) => header.name)],
