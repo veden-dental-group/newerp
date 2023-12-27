@@ -1,4 +1,4 @@
-import sequelize from '@/lib/sequelize';
+import {oracleErp} from '@/lib/sequelize';
 import oracledb from 'oracledb';
 import { QueryTypes, DataTypes, Sequelize } from 'sequelize';
 import { NextResponse } from 'next/server';
@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
             null, 'admin', :o_order_code, :o_msg);
         END; `;
 
-		const res = await sequelize.query(queryStr, {
+		const res = await oracleErp.query(queryStr, {
 			bind: {
 				RX: { type: oracledb.STRING, dir: oracledb.BIND_IN, val: input },
 				o_order_code: { type: oracledb.STRING, dir: oracledb.BIND_OUT },

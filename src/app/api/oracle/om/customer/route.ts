@@ -1,11 +1,11 @@
-import sequelize from '@/lib/sequelize';
+import { oracleErp } from '@/lib/sequelize';
 import oracledb from 'oracledb';
 import { QueryTypes, DataTypes, Sequelize } from 'sequelize';
 import { NextResponse } from 'next/server';
 
 export const GET = async () => {
-	try {
-		const queryStr = `
+  try {
+    const queryStr = `
 		SELECT
 				customer_id,
 				company_id,
@@ -17,15 +17,15 @@ export const GET = async () => {
 		WHERE
 				company_id = 210`;
 
-		const res = await sequelize.query(queryStr, { type: QueryTypes.SELECT });
-		
-		if (res.length) {
-			return NextResponse.json({ status: 200, result: res });
-		} else {
-			return NextResponse.json({ status: 204, result: 'Data not found.' });
-		}
-	} catch (error) {
-		console.log('error', error);
-		return NextResponse.json({ status: 404, result: 'Query is invalid' });
-	}
+    const res = await oracleErp.query(queryStr, { type: QueryTypes.SELECT });
+
+    if (res.length) {
+      return NextResponse.json({ result: res });
+    } else {
+      return NextResponse.json({}, { status: 204, statusText: 'Data Not Found.' });
+    }
+  } catch (error) {
+    console.error('error', error);
+    return NextResponse.json({}, { status: 404, statusText: 'Query is invalid' });
+  }
 };
