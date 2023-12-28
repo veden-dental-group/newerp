@@ -3,6 +3,23 @@ import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
 import { QueryTypes } from 'sequelize';
 
+export const GET = async () => {
+  try {
+    const queryStr = `SELECT * FROM csp_orders_temp ORDER BY csp_serial_no ASC`;
+
+    const res = await oracleCsp.query(queryStr);
+
+    if (res.length) {
+      return NextResponse.json({ result: res });
+    } else {
+      return NextResponse.json({}, { status: 204, statusText: 'Data Not Found.' });
+    }
+  } catch (error) {
+    console.error('error', error);
+    return NextResponse.json({}, { status: 404, statusText: 'Query is invalid' });
+  }
+};
+
 export const POST = async (req: Request) => {
   const { csp_order_id, company_id, customer_id, csp_file_url } = await req.json();
   if (!csp_order_id) return NextResponse.json({}, { status: 400, statusText: 'csp_order_id empty!' });

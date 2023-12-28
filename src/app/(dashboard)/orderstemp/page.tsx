@@ -1,46 +1,18 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Textarea } from '@/components/ui/textarea';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
-export default function Home() {
+export default function Orderstemp() {
   const [entries, setEntries] = useState([]);
   const [headers, setHeaders] = useState<{ name: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState<string | null>(null);
 
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const submitTEST = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch('/api/oracle/om/customer');
-      setIsLoading(false);
-      if (res.status === 200) {
-        const { result } = await res.json();
-        console.log('res', result);
-        setHasError(null);
-      } else {
-        setHasError(res.statusText);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-      setHasError(null);
-    }
-  };
-
   const submitHandler = async () => {
-    const input = inputRef.current!.value.trim();
-    if (!input) return;
     try {
       setIsLoading(true);
-      const res = await fetch('/api/query/plaintext', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input }),
-      });
+      const res = await fetch('/api/oracle/csp/orderstemp');
       setIsLoading(false);
       if (res.status === 200) {
         const { result } = await res.json();
@@ -57,43 +29,11 @@ export default function Home() {
     }
   };
 
-  const exportHandler = async () => {
-    if (entries.length === 0 || hasError) return;
-
-    const res = await fetch('/api/report', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        headers,
-        entries,
-      }),
-    });
-
-    const blob = await res.blob();
-
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'report.xlsx';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="flex min-h-screen flex-col items-center justify-between px-24 py-16">
       <div className="flex w-full flex-row items-center gap-6">
-        <Textarea disabled={isLoading} ref={inputRef} />
         <Button disabled={isLoading} onClick={submitHandler}>
           Submit
-        </Button>
-        <Button disabled={isLoading || entries.length === 0 || !!hasError} onClick={exportHandler}>
-          Export
-        </Button>
-        <Button disabled={isLoading} onClick={submitTEST}>
-          TEST
         </Button>
       </div>
       {isLoading ? (
