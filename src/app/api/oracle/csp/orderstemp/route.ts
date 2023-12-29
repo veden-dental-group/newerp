@@ -5,7 +5,8 @@ import { QueryTypes } from 'sequelize';
 
 export const GET = async () => {
   try {
-    const queryStr = `SELECT * FROM csp_orders_temp ORDER BY csp_serial_no ASC`;
+    const queryStr = `SELECT CSP_SERIAL_NO, CSP_CUSTOMER_ID, CSP_FILE_URL, COMPANY_ID, CREATE_DATE, TRANS_FLAG, TRANS_DATE
+    FROM csp_orders_temp ORDER BY csp_serial_no ASC`;
 
     const res = await oracleCsp.query(queryStr);
 
