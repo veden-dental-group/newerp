@@ -2,7 +2,7 @@ import { oracleErp } from '@/lib/sequelize';
 import oracledb from 'oracledb';
 import { QueryTypes, DataTypes, Sequelize } from 'sequelize';
 import { NextResponse } from 'next/server';
-
+export const dynamic = 'force-dynamic';
 export const GET = async () => {
   try {
     const queryStr = `
