@@ -15,7 +15,7 @@ export default function Home() {
   const submitTEST = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/oracle/om/customer');
+      const res = await fetch('/api/om/customer');
       setIsLoading(false);
       if (res.status === 200) {
         const { result } = await res.json();

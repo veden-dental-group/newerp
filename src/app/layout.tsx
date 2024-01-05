@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Toaster } from '@/components/ui/toaster';
 // import { Inter } from "next/font/google";
 import './globals.css';
 import AuthProvider from '@/components/AuthProvider';
@@ -17,7 +18,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang={locale}>
       <AuthProvider>
         {/* <body className={inter.className}>{children}</body> */}
-        <body>{children}</body>
+        <body>
+          <main>{children}</main>
+          <Toaster />
+        </body>
       </AuthProvider>
     </html>
   );

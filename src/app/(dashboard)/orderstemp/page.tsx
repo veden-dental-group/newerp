@@ -14,7 +14,7 @@ export default function Orderstemp() {
   const submitHandler = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/oracle/csp/orderstemp');
+      const res = await fetch('/api/csp/orderstemp');
       setIsLoading(false);
       if (res.status === 200) {
         const { result } = await res.json();
@@ -36,7 +36,7 @@ export default function Orderstemp() {
     if (!input) return;
     try {
       setIsLoading(true);
-      const res = await fetch('/api/oracle/om/order', {
+      const res = await fetch('/api/om/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ company_id: 210, csp_serial_no: parseInt(input) }),
