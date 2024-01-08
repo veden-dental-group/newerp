@@ -19,13 +19,12 @@ export default function Home() {
       setIsLoading(false);
       if (res.status === 200) {
         const { result } = await res.json();
-        console.log('res', result);
         setHasError(null);
       } else {
         setHasError(res.statusText);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
       setHasError(null);
     }
@@ -51,7 +50,7 @@ export default function Home() {
         setHasError(res.statusText);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
       setHasError(null);
     }

@@ -2,11 +2,29 @@ import { oracleCsp } from '@/lib/sequelize';
 import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
 import { QueryTypes } from 'sequelize';
+import { getServerSession } from 'next-auth';
+import { OPTIONS } from '@/app/api/auth/[...nextauth]/authOptions';
 
 export const GET = async () => {
+  const session = await getServerSession(OPTIONS);
+  if (!session?.user) return NextResponse.json({}, { status: 401, statusText: 'Not Authenticated' });
   try {
-    const queryStr = `SELECT CSP_SERIAL_NO, CSP_CUSTOMER_ID, CSP_FILE_URL, COMPANY_ID, CREATE_DATE, TRANS_FLAG, TRANS_DATE
-    FROM csp_orders_temp ORDER BY csp_serial_no ASC`;
+    const { company } = session.user;
+    const queryStr = `
+    SELECT
+        a.*,
+        c.customer_code,
+        c.customer_short_name
+    FROM
+        csp.csp_orders_temp a
+    JOIN
+        erp.om_customer_header c 
+    ON 
+        a.company_id = c.company_id AND a.csp_customer_id = c.customer_id
+    WHERE
+        a.company_id = ${company}
+    ORDER BY
+        a.csp_serial_no`;
 
     const res = await oracleCsp.query(queryStr);
 

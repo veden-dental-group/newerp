@@ -33,7 +33,7 @@ export const POST = async (req: Request) => {
       return NextResponse.json({ status: 204, result: 'Data Create Failed.' });
     }
   } catch (error) {
-    console.log('error', error);
+    console.error(error);
     return NextResponse.json({ status: 404, result: 'Query is invalid' });
   }
 };

@@ -28,7 +28,6 @@ export default function Home() {
     const { status, result } = await res.json();
     setIsLoading(false);
     if (status === 200) {
-      console.log('res', result);
       setHasError(null);
     } else {
       setHasError(result);
@@ -55,7 +54,7 @@ export default function Home() {
         setHasError(res.statusText);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
       setHasError(null);
     }

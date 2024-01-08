@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-react';
@@ -21,11 +21,11 @@ function Tree({ data }: { data: TreeDTO[] | TreeDTO }) {
   return (
     <ul role="list" className="space-y-1">
       {data instanceof Array ? (
-        data.map((item) => (
+        data.map((item, i) => (
           <li key={item.MENU_ID}>
             {item.children ? (
               <AccordionPrimitive.Root type="single" collapsible>
-                <AccordionPrimitive.Item value="item-1">
+                <AccordionPrimitive.Item value={item.MENU_CODE}>
                   <AccordionTrigger>{item.MENU_NAME}</AccordionTrigger>
                   <AccordionContent className="pl-4">
                     <Tree data={item.children ? item.children : item} />
@@ -50,7 +50,7 @@ export default Tree;
 
 function Leaf({ name }: { name: string }) {
   return (
-    <a href="#" className={'flex flex-1 items-center py-4 font-medium'}>
+    <a href="#" className={'flex flex-1 items-center py-1 font-medium hover:scale-105 hover:underline'}>
       <ChevronRight className="h-4 w-4 shrink-0 opacity-0" />
       {name}
     </a>
@@ -64,7 +64,7 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        'flex flex-1 items-center py-4 font-medium transition-all first:[&[data-state=open]>svg]:rotate-90',
+        'flex flex-1 items-center py-1 font-medium transition-all first:[&[data-state=open]>svg]:rotate-90',
         className,
       )}
       {...props}
@@ -88,7 +88,7 @@ const AccordionContent = React.forwardRef<
     )}
     {...props}
   >
-    <div className="pb-4 pt-0">{children}</div>
+    <div className="pb-2 pt-0">{children}</div>
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
