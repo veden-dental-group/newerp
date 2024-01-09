@@ -13,7 +13,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession();
   if (!session?.user) redirect('/login');
 
-  const res = await fetch(process.env.ROOT_URL + '/api/sy/menu');
+  const res = await fetch(process.env.ROOT_URL + '/api/sys/menu');
   const { result }: { result: TreeDTO[] } = await res.json();
 
   const createNestedArray = (data: TreeDTO[]): TreeDTO[] => {
@@ -48,13 +48,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <span className="px-2 text-base">用戶：dev</span>
           <span className="px-2 text-base">廠別：VD210</span>
           <div className="flex justify-start">
-            <Link href={'/'} className="hover:text-pin h-10 w-10 p-2">
+            <Link href={'/'} className="h-10 w-10 p-2 hover:text-pin">
               <FaHome className="h-6 w-6" />
             </Link>
-            <Link href={'/orderstemp'} className="hover:text-pin h-10 w-10 p-2">
+            <Link href={'/orderstemp'} className="h-10 w-10 p-2 hover:text-pin">
               <BiLayerMinus className="h-6 w-6" />
             </Link>
-            <Link href={'/logout'} className="hover:text-pin h-10 w-10 p-2">
+            <Link href={'/logout'} className="h-10 w-10 p-2 hover:text-pin">
               <IoLogOutOutline className="h-6 w-6" />
             </Link>
           </div>

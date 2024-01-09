@@ -29,8 +29,11 @@ export default function Orderstemp() {
     { key: 'CUSTOMER_SHORT_NAME', name: '客戶名稱' },
     { key: 'CREATE_DATE', name: '建立日期', type: 'date' },
     { key: 'ORDER_RX', name: 'RX#' },
-    { key: 'ORDER_CODE', name: 'ERP訂單號' },
+    { key: 'ORDER_CLINIC', name: '診所' },
+    { key: 'ORDER_PATIENT', name: '病患' },
+    { key: 'ORDER_DOCTOR', name: '醫生' },
     { key: 'OLD_ORDER_CODE', name: '廠內訂單號' },
+    { key: 'ORDER_CODE', name: 'ERP訂單號' },
   ];
 
   const handleSearch = async (value: HeaderForm) => {
@@ -53,8 +56,25 @@ export default function Orderstemp() {
     }
   };
 
-  const copyText = (value: string) => {
-    navigator.clipboard.writeText(value);
+  const copyText = async (value: string) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const textArea = document.createElement('textarea');
+      textArea.value = value;
+      // Move textarea out of the viewport so it's not visible
+      textArea.style.position = 'absolute';
+      textArea.style.left = '-999999px';
+      document.body.prepend(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        textArea.remove();
+      }
+    }
     toast({
       title: 'Copied!',
       duration: 1000,

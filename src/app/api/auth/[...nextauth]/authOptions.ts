@@ -46,7 +46,7 @@ export const OPTIONS: NextAuthOptions = {
     }),
   ],
   jwt: {
-    maxAge: 7 * 24 * 60 * 60,
+    maxAge: 1 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ user, token }) {

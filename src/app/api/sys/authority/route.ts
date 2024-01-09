@@ -5,7 +5,7 @@ import { QueryTypes } from 'sequelize';
 
 export const GET = async () => {
   try {
-    const queryStr = `SELECT * FROM sy_authority`;
+    const queryStr = `SELECT * FROM sys_authority`;
 
     const res = await oracleErp.query(queryStr, { type: QueryTypes.SELECT });
 

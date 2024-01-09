@@ -5,7 +5,7 @@ import { QueryTypes } from 'sequelize';
 
 export const GET = async () => {
   try {
-    const queryStr = `SELECT * FROM SY_MENU ORDER BY MENU_CATEGORY_ID ASC`;
+    const queryStr = `SELECT * FROM SYS_MENU ORDER BY MENU_CATEGORY_ID ASC`;
 
     const res = await oracleErp.query(queryStr, { type: QueryTypes.SELECT });
 
