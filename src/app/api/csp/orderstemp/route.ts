@@ -38,7 +38,7 @@ export const POST = async (req: Request) => {
     if (res.length) {
       return NextResponse.json({ result: res });
     } else {
-      return NextResponse.json({}, { status: 204, statusText: 'CSP_ORDERS_TEMP Insert Failed.' });
+      return NextResponse.json({}, { status: 400, statusText: 'CSP_ORDERS_TEMP Insert Failed.' });
     }
   } catch (error) {
     console.error('error', error);

@@ -18,10 +18,11 @@ export const GET = async () => {
 
     const res = await oracleErp.query(queryStr, { type: QueryTypes.SELECT });
 
-    if (res.length) {
-      return NextResponse.json({ result: res });
+    if (res) {
+      const statusText = res.length ? '' : 'Data Not Found.';
+      return NextResponse.json({ result: res }, { status: 200, statusText });
     } else {
-      return NextResponse.json({}, { status: 204, statusText: 'Data Not Found.' });
+      return NextResponse.json({}, { status: 400, statusText: 'Query Failed.' });
     }
   } catch (error) {
     console.error('error', error);

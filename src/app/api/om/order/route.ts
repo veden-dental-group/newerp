@@ -41,7 +41,7 @@ export const POST = async (req: Request) => {
     if (res.length) {
       return NextResponse.json({ result: res });
     } else {
-      return NextResponse.json({}, { status: 204, statusText: 'get_order_header Failed.' });
+      return NextResponse.json({}, { status: 400, statusText: 'get_order_header Failed.' });
     }
   } catch (error) {
     console.error('error', error);

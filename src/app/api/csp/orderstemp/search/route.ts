@@ -45,10 +45,11 @@ export const GET = async (request: Request) => {
     queryStr += ' ORDER BY a.csp_serial_no ';
     const res = await oracleCsp.query(queryStr);
 
-    if (res.length) {
-      return NextResponse.json({ result: res });
+    if (res) {
+      const statusText = res.length ? '' : 'Data Not Found.';
+      return NextResponse.json({ result: res }, { status: 200, statusText });
     } else {
-      return NextResponse.json({}, { status: 204, statusText: 'Data Not Found.' });
+      return NextResponse.json({}, { status: 400, statusText: 'Query Failed.' });
     }
   } catch (error) {
     console.error('error', error);

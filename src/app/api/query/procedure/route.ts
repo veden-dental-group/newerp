@@ -30,7 +30,7 @@ export const POST = async (req: Request) => {
     if (res.length) {
       return NextResponse.json({ status: 200, result: res });
     } else {
-      return NextResponse.json({ status: 204, result: 'Data Create Failed.' });
+      return NextResponse.json({}, { status: 400, statusText: 'Data Create Failed.' });
     }
   } catch (error) {
     console.error(error);
