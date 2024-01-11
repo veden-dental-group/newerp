@@ -6,9 +6,10 @@ type Props = {
   option: string;
   control: Control<any>;
   children: (field: any) => React.ReactNode;
+  label?: string;
 };
 
-const TableHeaderOption: React.FC<Props> = ({ children, option, control }) => {
+const TableHeaderOption: React.FC<Props> = ({ children, option, control, label }) => {
   return (
     <FormField
       control={control}
@@ -16,8 +17,8 @@ const TableHeaderOption: React.FC<Props> = ({ children, option, control }) => {
       render={({ field }) => (
         <FormItem>
           <div className="flex items-center gap-2">
-            <FormLabel className="text-base">
-              {option.toLowerCase().replace(/^\w|\s\w/g, (char) => char.toUpperCase())}:
+            <FormLabel className="whitespace-nowrap text-base">
+              {label ? label : option.toLowerCase().replace(/^\w|\s\w/g, (char) => char.toUpperCase())}:
             </FormLabel>
             {children(field)}
           </div>

@@ -2,6 +2,7 @@
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { searchParamsBuilder } from '@/lib/searchParamsBuilder';
 
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,7 @@ import Header, { HeaderForm } from './Header';
 import { FaCopy } from 'react-icons/fa6';
 import { ImDownload } from 'react-icons/im';
 import { TbWorldDownload } from 'react-icons/tb';
-import { searchParamsBuilder } from '@/lib/searchParamsBuilder';
+import { GrSend } from 'react-icons/gr';
 
 export default function Orderstemp() {
   const { toast } = useToast();
@@ -34,6 +35,7 @@ export default function Orderstemp() {
     { key: 'ORDER_DOCTOR', name: '醫生' },
     { key: 'OLD_ORDER_CODE', name: '廠內訂單號' },
     { key: 'ORDER_CODE', name: 'ERP訂單號' },
+    { key: 'CSP_FILE_NAME', name: '檔名' },
   ];
 
   const handleSearch = async (value: HeaderForm) => {
@@ -81,6 +83,29 @@ export default function Orderstemp() {
       variant: 'success',
       action: <FaCopy />,
     });
+  };
+
+  const handleUpdateDetail = async (entry: any) => {
+    console.log(entry);
+    try {
+      setIsLoading(true);
+      const res = await fetch('/api/csp/orderstemp/updateDetail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+      });
+      setIsLoading(false);
+      if (res.status === 200) {
+        const result = await res.json();
+        console.log(result);
+      } else {
+        setHasError(res.statusText);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+      setHasError(null);
+    }
   };
 
   return (
@@ -142,8 +167,8 @@ export default function Orderstemp() {
                                 const url: string = entry['CSP_FILE_URL'] || '';
                                 if (url) {
                                   const startIndex = url.indexOf('/newcsp/') + '/newcsp/'.length;
-                                  const result = url.slice(startIndex);
-                                  router.replace(process.env.NEXT_PUBLIC_NAS_URL + result);
+                                  const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + url.slice(startIndex);
+                                  window.open(downloadUrl.replace(/\+/gm, ' '));
                                 } else {
                                   toast({
                                     title: '檔案未同步到NAS!',
@@ -169,6 +194,14 @@ export default function Orderstemp() {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>s3</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="pureIcon" size="smicon" onClick={() => handleUpdateDetail(entry)}>
+                              <GrSend />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>更新</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>

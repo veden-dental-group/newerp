@@ -13,8 +13,8 @@ export const GET = async (request: Request) => {
   try {
     const { company } = session.user;
     const url = new URL(request.url);
-    const fields = ['from', 'to', 'rx'];
-    const { from, to, rx } = searchParamsParser(url, fields);
+    const fields = ['from', 'to', 'rx', 'customer', 'filename'];
+    const { from, to, rx, customer, filename } = searchParamsParser(url, fields);
 
     let queryStr = `
     SELECT
@@ -39,6 +39,8 @@ export const GET = async (request: Request) => {
       }
     }
     if (rx) queryStr += `AND order_rx LIKE '%${rx}%' `;
+    if (customer) queryStr += `AND csp_customer_id = ${customer} `;
+    if (filename) queryStr += `AND csp_file_name LIKE '%${filename}%' `;
 
     queryStr += ' ORDER BY a.csp_serial_no ';
     const res = await oracleCsp.query(queryStr);
