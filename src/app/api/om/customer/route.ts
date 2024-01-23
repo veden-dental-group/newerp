@@ -1,20 +1,20 @@
 import { oracleErp } from '@/lib/sequelize';
-import oracledb from 'oracledb';
-import { QueryTypes, DataTypes, Sequelize } from 'sequelize';
 import { NextResponse } from 'next/server';
+import { QueryTypes } from 'sequelize';
 export const dynamic = 'force-dynamic';
 export const GET = async () => {
   try {
     const queryStr = `
-		SELECT
+    SELECT
         *
     FROM
         om_customer_header
     WHERE
-        ( company_id = 410 )
+        ( company_id = 410
+          AND customer_code = 'U132999' )
         OR ( company_id = 210
             AND customer_short_name NOT LIKE 'CNC%'
-            AND customer_code != 'U132999' ) `;
+            AND customer_code != 'U132999' )`;
 
     const res = await oracleErp.query(queryStr, { type: QueryTypes.SELECT });
 
