@@ -22,7 +22,7 @@ export const GET = async (request: Request) => {
         c.customer_code,
         c.customer_short_name
     FROM
-        csp.csp_orders_temp a
+        csp.csp_order_header_temp a
     JOIN
         erp.om_customer_header c 
     ON 
