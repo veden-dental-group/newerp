@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import { oracleCsp } from '@/lib/sequelize';
 import { QueryTypes } from 'sequelize';
+import dayjs from 'dayjs';
 const api = axios.create({
   baseURL: process.env.NEW_CSP_API,
   headers: { 'Content-Type': 'application/json' },
@@ -30,7 +31,8 @@ export const POST = async (request: Request) => {
       UPDATE
           csp_order_header_temp
       SET
-          CSP_UUID='${orderId}' 
+          CSP_UUID='${orderId}', TRANS_FLAG='T', 
+          TRANS_DATE=TO_DATE('${dayjs().format('YYYY-MM-DD HH:mm:ss')}','YYYY-MM-DD hh24:mi:ss')
       WHERE
           CSP_SERIAL_NO=${erpSerialNumber} `;
 

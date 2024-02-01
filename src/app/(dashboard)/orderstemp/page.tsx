@@ -1,7 +1,7 @@
 'use client';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, createRef } from 'react';
 import { searchParamsBuilder } from '@/lib/searchParamsBuilder';
 
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -22,6 +22,7 @@ import { IoMdCloseCircle } from 'react-icons/io';
 export default function Orderstemp() {
   const { toast } = useToast();
   const router = useRouter();
+  const searchBtn = createRef<HTMLButtonElement>();
 
   const [entries, setEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -84,7 +85,7 @@ export default function Orderstemp() {
     }
     toast({
       title: 'Copied!',
-      duration: 2000,
+      duration: 1500,
       variant: 'success',
       action: <FaCopy />,
     });
@@ -102,7 +103,7 @@ export default function Orderstemp() {
         toast({
           title: 'Updated!',
           description: result.erpSerialNumber,
-          duration: 2000,
+          duration: 1500,
           variant: 'success',
           action: <FaCheckCircle />,
         });
@@ -110,7 +111,7 @@ export default function Orderstemp() {
         toast({
           title: 'Failed!',
           description: res.statusText,
-          duration: 2000,
+          duration: 1500,
           variant: 'destructive',
           action: <IoMdCloseCircle />,
         });
@@ -134,15 +135,16 @@ export default function Orderstemp() {
         toast({
           title: 'Created!',
           description: result ? 1 : 0,
-          duration: 2000,
+          duration: 1500,
           variant: 'success',
           action: <FaCheckCircle />,
         });
+        searchBtn.current?.click();
       } else {
         toast({
           title: 'Failed!',
           description: res.statusText,
-          duration: 2000,
+          duration: 1500,
           variant: 'destructive',
           action: <IoMdCloseCircle />,
         });
@@ -157,7 +159,7 @@ export default function Orderstemp() {
   return (
     <div className="flex max-h-screen flex-col items-center gap-4 p-6">
       <div className="flex w-full">
-        <Header submitHandler={handleSearch} />
+        <Header submitHandler={handleSearch} btnRef={searchBtn} />
       </div>
       {isLoading ? (
         <span className="text-2xl">
@@ -218,7 +220,7 @@ export default function Orderstemp() {
                                 } else {
                                   toast({
                                     title: '檔案未同步到NAS!',
-                                    duration: 2000,
+                                    duration: 1500,
                                     variant: 'destructive',
                                   });
                                 }
@@ -241,6 +243,7 @@ export default function Orderstemp() {
                           </TooltipTrigger>
                           <TooltipContent>s3</TooltipContent>
                         </Tooltip>
+
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button variant="pureIcon" size="smicon" onClick={() => handleUpdateDetail(entry)}>
@@ -249,14 +252,16 @@ export default function Orderstemp() {
                           </TooltipTrigger>
                           <TooltipContent>更新</TooltipContent>
                         </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="pureIcon" size="smicon" onClick={() => handelManualCreate(entry)}>
-                              <GrDocumentUpdate />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>生成</TooltipContent>
-                        </Tooltip>
+                        {entry['TRANS_FLAG'] === 'F' ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="pureIcon" size="smicon" onClick={() => handelManualCreate(entry)}>
+                                <GrDocumentUpdate />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>生成</TooltipContent>
+                          </Tooltip>
+                        ) : null}
                       </TooltipProvider>
                     </div>
                   </TableCell>

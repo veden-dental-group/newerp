@@ -22,6 +22,7 @@ import { twMerge } from 'tailwind-merge';
 
 type Props = {
   submitHandler: (value: HeaderForm) => void;
+  btnRef?: React.Ref<HTMLButtonElement>;
 };
 
 const formSchema = z.object({
@@ -39,7 +40,7 @@ export const HeaderFormDefaultValue: HeaderForm = {
   customer: undefined,
 };
 
-const Header: React.FC<Props> = ({ submitHandler }) => {
+const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
   const form = useForm<HeaderForm>({
     resolver: zodResolver(formSchema),
     defaultValues: HeaderFormDefaultValue,
@@ -48,7 +49,7 @@ const Header: React.FC<Props> = ({ submitHandler }) => {
 
   return (
     <Form {...form}>
-      <TableHeaderContainer onClick={form.handleSubmit(submitHandler)}>
+      <TableHeaderContainer onClick={form.handleSubmit(submitHandler)} btnRef={btnRef}>
         <TableHeaderOption option="date" control={form.control} label="日期">
           {(field) => (
             <DateRangePicker
