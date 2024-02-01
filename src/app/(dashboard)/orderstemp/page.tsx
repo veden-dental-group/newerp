@@ -12,9 +12,12 @@ import { useToast } from '@/components/ui/use-toast';
 import Header, { HeaderForm } from './Header';
 
 import { FaCopy } from 'react-icons/fa6';
+import { FaCheckCircle } from 'react-icons/fa';
 import { ImDownload } from 'react-icons/im';
 import { TbWorldDownload } from 'react-icons/tb';
 import { GrSend } from 'react-icons/gr';
+import { GrDocumentUpdate } from 'react-icons/gr';
+import { IoMdCloseCircle } from 'react-icons/io';
 
 export default function Orderstemp() {
   const { toast } = useToast();
@@ -30,6 +33,8 @@ export default function Orderstemp() {
     { key: 'CUSTOMER_SHORT_NAME', name: '客戶名稱' },
     { key: 'CREATE_DATE', name: '建立日期', type: 'date' },
     { key: 'ORDER_RX', name: 'RX#' },
+    { key: 'PRODUCT_NAME2', name: '主產品' },
+    { key: 'ORDER_LINE_QTY', name: '數量' },
     { key: 'ORDER_CLINIC', name: '診所' },
     { key: 'ORDER_PATIENT', name: '病患' },
     { key: 'ORDER_DOCTOR', name: '醫生' },
@@ -79,27 +84,68 @@ export default function Orderstemp() {
     }
     toast({
       title: 'Copied!',
-      duration: 1000,
+      duration: 2000,
       variant: 'success',
       action: <FaCopy />,
     });
   };
 
   const handleUpdateDetail = async (entry: any) => {
-    console.log(entry);
     try {
-      setIsLoading(true);
       const res = await fetch('/api/csp/orderstemp/updateDetail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(entry),
       });
-      setIsLoading(false);
       if (res.status === 200) {
-        const result = await res.json();
-        console.log(result);
+        const { result } = await res.json();
+        toast({
+          title: 'Updated!',
+          description: result.erpSerialNumber,
+          duration: 2000,
+          variant: 'success',
+          action: <FaCheckCircle />,
+        });
       } else {
-        setHasError(res.statusText);
+        toast({
+          title: 'Failed!',
+          description: res.statusText,
+          duration: 2000,
+          variant: 'destructive',
+          action: <IoMdCloseCircle />,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+      setHasError(null);
+    }
+  };
+
+  const handelManualCreate = async (entry: any) => {
+    try {
+      const res = await fetch('/api/csp/orderstemp/manualCreate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+      });
+      if (res.status === 200) {
+        const { result } = await res.json();
+        toast({
+          title: 'Created!',
+          description: result ? 1 : 0,
+          duration: 2000,
+          variant: 'success',
+          action: <FaCheckCircle />,
+        });
+      } else {
+        toast({
+          title: 'Failed!',
+          description: res.statusText,
+          duration: 2000,
+          variant: 'destructive',
+          action: <IoMdCloseCircle />,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -172,7 +218,7 @@ export default function Orderstemp() {
                                 } else {
                                   toast({
                                     title: '檔案未同步到NAS!',
-                                    duration: 1000,
+                                    duration: 2000,
                                     variant: 'destructive',
                                   });
                                 }
@@ -202,6 +248,14 @@ export default function Orderstemp() {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>更新</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="pureIcon" size="smicon" onClick={() => handelManualCreate(entry)}>
+                              <GrDocumentUpdate />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>生成</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>

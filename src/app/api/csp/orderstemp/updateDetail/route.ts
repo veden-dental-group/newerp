@@ -22,6 +22,8 @@ export const POST = async (request: Request) => {
       o_order_clinic: body.ORDER_CLINIC,
       o_order_patient: body.ORDER_PATIENT,
       o_order_doctor: body.ORDER_DOCTOR,
+      o_order_tracking: '',
+      o_order_product: body.PRODUCT_NAME2,
     };
 
     const res1 = await api.request({ url: '/order/updateDetail', method: 'PATCH', data });
@@ -38,10 +40,10 @@ export const POST = async (request: Request) => {
       return NextResponse.json({}, { status: res2.status, statusText: res2.statusText });
     }
 
-    return NextResponse.json({ result: res2.data.result });
+    return NextResponse.json({ result: res2.data });
   } catch (error: any) {
-    console.log(error);
-    let statusText = 'insertcsp Error';
+    let statusText = 'UpdateDetail Error! ';
+    if (error.response) statusText = error.response.statusText;
     return NextResponse.json({}, { status: 400, statusText });
   }
 };

@@ -17,18 +17,15 @@ export const GET = async (request: Request) => {
     const { from, to, rx, customer, filename } = searchParamsParser(url, fields);
 
     let queryStr = `
-    SELECT
-        a.*,
-        c.customer_code,
-        c.customer_short_name
-    FROM
-        csp.csp_order_header_temp a
-    JOIN
-        erp.om_customer_header c 
-    ON 
-        a.company_id = c.company_id AND a.csp_customer_id = c.customer_id
-    WHERE
-        a.company_id = ${company} `;
+    SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name 
+    FROM csp.csp_order_header_temp a 
+    JOIN erp.om_customer_header  c 
+    ON a.csp_customer_id = c.customer_id 
+    LEFT JOIN csp.csp_order_line_temp b 
+    ON a.order_id = b.order_id AND b.order_line_no = 1 
+    WHERE 1=1 `;
+
+    // queryStr += `AND a.company_id = ${company} `;
 
     if (from) {
       if (to) {
