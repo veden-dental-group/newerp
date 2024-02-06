@@ -170,14 +170,14 @@ export default function Orderstemp() {
       ) : (
         entries.length !== 0 && (
           <Table>
-            <TableHeader>
+            <TableHeader className="sticky top-0 z-10 bg-primary">
               <TableRow>
                 {headers.map((el) => (
-                  <TableHead key={el.key} className="text-center font-bold">
+                  <TableHead key={el.key} className="text-center font-bold text-white">
                     {el.name}
                   </TableHead>
                 ))}
-                <TableHead className="text-center font-bold">ACTIONS</TableHead>
+                <TableHead className="text-center font-bold text-white">ACTIONS</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

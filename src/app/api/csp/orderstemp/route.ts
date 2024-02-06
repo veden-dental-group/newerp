@@ -11,10 +11,10 @@ export const POST = async (req: Request) => {
 
   try {
     let style_id = 1;
-    if(category){
-      if(category === 'digital') style_id = 1;
-      if(category === 'conventional') style_id = 2;
-      if(category === 'design') style_id = 3;
+    if (category) {
+      if (category === 'digital') style_id = 1;
+      if (category === 'conventional') style_id = 2;
+      if (category === 'design') style_id = 3;
     }
     const queryStr = `
 					DECLARE
