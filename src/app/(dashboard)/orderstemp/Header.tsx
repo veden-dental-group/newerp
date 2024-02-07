@@ -64,7 +64,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
             <Input
               type="text"
               placeholder={'rx'}
-              className="mr-2 w-48 rounded-md bg-white text-base text-primary placeholder:text-primary/50"
+              className="mr-2 w-48 rounded-md bg-white text-sm text-primary placeholder:text-primary/50"
               {...field}
             />
           )}
@@ -74,7 +74,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
             <Input
               type="text"
               placeholder={'...'}
-              className="mr-2 w-48 rounded-md bg-white text-base text-primary placeholder:text-primary/50"
+              className="mr-2 w-48 rounded-md bg-white text-sm text-primary placeholder:text-primary/50"
               {...field}
             />
           )}

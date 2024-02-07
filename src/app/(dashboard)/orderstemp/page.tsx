@@ -18,6 +18,7 @@ import { TbWorldDownload } from 'react-icons/tb';
 import { GrSend } from 'react-icons/gr';
 import { GrDocumentUpdate } from 'react-icons/gr';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { ImListNumbered } from 'react-icons/im';
 
 export default function Orderstemp() {
   const { toast } = useToast();
@@ -30,12 +31,12 @@ export default function Orderstemp() {
 
   const headers = [
     { key: 'CSP_SERIAL_NO', name: '流水號', type: 'copy' },
+    { key: 'ACTIONS', name: 'ACTIONS' },
+    { key: 'ORDER_STYLE_ID', name: '樣式' },
     { key: 'CUSTOMER_CODE', name: '客戶編號' },
     { key: 'CUSTOMER_SHORT_NAME', name: '客戶名稱' },
     { key: 'CREATE_DATE', name: '建立日期', type: 'date' },
     { key: 'ORDER_RX', name: 'RX#' },
-    { key: 'PRODUCT_NAME2', name: '主產品' },
-    { key: 'ORDER_LINE_QTY', name: '數量' },
     { key: 'ORDER_CLINIC', name: '診所' },
     { key: 'ORDER_PATIENT', name: '病患' },
     { key: 'ORDER_DOCTOR', name: '醫生' },
@@ -156,6 +157,14 @@ export default function Orderstemp() {
     }
   };
 
+  const transStyle = (style_id: number) => {
+    let label = '';
+    if (style_id === 1) label = '數位';
+    if (style_id === 2) label = '實體';
+    if (style_id === 3) label = '僅設計';
+    return label;
+  };
+
   return (
     <div className="flex max-h-screen flex-col items-center gap-4 p-6">
       <div className="flex w-full">
@@ -170,101 +179,124 @@ export default function Orderstemp() {
       ) : (
         entries.length !== 0 && (
           <Table>
-            <TableHeader className="sticky top-0 z-10 bg-primary">
+            <TableHeader className="sticky top-0 z-10 bg-primary text-xs">
               <TableRow>
                 {headers.map((el) => (
                   <TableHead key={el.key} className="text-center font-bold text-white">
                     {el.name}
                   </TableHead>
                 ))}
-                <TableHead className="text-center font-bold text-white">ACTIONS</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="text-xs">
               {entries.map((entry, rowIndex) => (
                 <TableRow key={rowIndex}>
                   {headers.map((el) => {
                     const val = entry[el.key];
-                    return (
+                    return el.key === 'ACTIONS' ? (
+                      <TableCell className="p-1 text-center" key={el.key}>
+                        <div className="flex items-center justify-center gap-1">
+                          <TooltipProvider delayDuration={500}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="pureIcon"
+                                  size="smicon"
+                                  onClick={() => {
+                                    const url: string = entry['CSP_FILE_URL'] || '';
+                                    if (url) {
+                                      const startIndex = url.indexOf('/newcsp/') + '/newcsp/'.length;
+                                      const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + url.slice(startIndex);
+                                      window.open(downloadUrl.replace(/\+/gm, ' '));
+                                    } else {
+                                      toast({
+                                        title: '檔案未同步到NAS!',
+                                        duration: 1500,
+                                        variant: 'destructive',
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <ImDownload />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>NAS</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="pureIcon"
+                                  size="smicon"
+                                  onClick={() => router.replace(entry['CSP_FILE_URL'] || '')}
+                                >
+                                  <TbWorldDownload />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>s3</TooltipContent>
+                            </Tooltip>
+
+                            {entry['CSP_ORDER_STATUS'] === 'C' ? null : (
+                              <>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button variant="pureIcon" size="smicon" onClick={() => handleUpdateDetail(entry)}>
+                                      <GrSend />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>更新</TooltipContent>
+                                </Tooltip>
+                                {entry['TRANS_FLAG'] === 'F' ? (
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="pureIcon"
+                                        size="smicon"
+                                        onClick={() => handelManualCreate(entry)}
+                                      >
+                                        <GrDocumentUpdate />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>生成</TooltipContent>
+                                  </Tooltip>
+                                ) : null}
+                              </>
+                            )}
+                          </TooltipProvider>
+                        </div>
+                      </TableCell>
+                    ) : (
                       <TableCell key={el.key} className="p-1 text-center">
-                        {el.type === 'date'
-                          ? dayjs(val).format('YYYY-MM-DD HH:mm:ss')
-                          : el.type === 'copy'
-                            ? val && (
-                                <div className="flex items-center justify-center gap-1">
-                                  <span>{val}</span>
-                                  <FaCopy
-                                    className="cursor-pointer text-primary hover:text-pin"
-                                    onClick={() => copyText(val)}
-                                  />
-                                </div>
-                              )
-                            : val}
+                        {el.type === 'date' ? (
+                          <div className="whitespace-nowrap">
+                            {dayjs(val).format('YYYY-MM-DD')}
+                            <br />
+                            {dayjs(val).format('HH:mm:ss')}
+                          </div>
+                        ) : el.type === 'copy' ? (
+                          val && (
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap">
+                              <span>{val}</span>
+                              <FaCopy
+                                className="cursor-pointer text-primary hover:text-pin"
+                                onClick={() => copyText(val)}
+                              />
+                            </div>
+                          )
+                        ) : (
+                          <div className="flex items-center justify-center gap-1">
+                            {el.key === 'ORDER_STYLE_ID' ? (
+                              <>
+                                <span>{transStyle(val)}</span>
+                                <ImListNumbered className="cursor-pointer text-primary hover:text-pin" />
+                              </>
+                            ) : (
+                              <span>{val}</span>
+                            )}
+                          </div>
+                        )}
                       </TableCell>
                     );
                   })}
-                  <TableCell className="p-1 text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <TooltipProvider delayDuration={500}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="pureIcon"
-                              size="smicon"
-                              onClick={() => {
-                                const url: string = entry['CSP_FILE_URL'] || '';
-                                if (url) {
-                                  const startIndex = url.indexOf('/newcsp/') + '/newcsp/'.length;
-                                  const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + url.slice(startIndex);
-                                  window.open(downloadUrl.replace(/\+/gm, ' '));
-                                } else {
-                                  toast({
-                                    title: '檔案未同步到NAS!',
-                                    duration: 1500,
-                                    variant: 'destructive',
-                                  });
-                                }
-                              }}
-                            >
-                              <ImDownload />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>NAS</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="pureIcon"
-                              size="smicon"
-                              onClick={() => router.replace(entry['CSP_FILE_URL'] || '')}
-                            >
-                              <TbWorldDownload />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>s3</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="pureIcon" size="smicon" onClick={() => handleUpdateDetail(entry)}>
-                              <GrSend />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>更新</TooltipContent>
-                        </Tooltip>
-                        {entry['TRANS_FLAG'] === 'F' ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button variant="pureIcon" size="smicon" onClick={() => handelManualCreate(entry)}>
-                                <GrDocumentUpdate />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>生成</TooltipContent>
-                          </Tooltip>
-                        ) : null}
-                      </TooltipProvider>
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -17,7 +17,7 @@ const TableHeaderOption: React.FC<Props> = ({ children, option, control, label }
       render={({ field }) => (
         <FormItem>
           <div className="flex items-center gap-2">
-            <FormLabel className="whitespace-nowrap text-base">
+            <FormLabel className="whitespace-nowrap text-sm">
               {label ? label : option.toLowerCase().replace(/^\w|\s\w/g, (char) => char.toUpperCase())}:
             </FormLabel>
             {children(field)}

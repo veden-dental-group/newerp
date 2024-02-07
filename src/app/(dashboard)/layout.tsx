@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <div className="relative flex max-h-[100dvh] w-full max-w-[100dvw] bg-secondary/50">
       <div
         id="sidebar"
-        className="flex h-full min-h-[100dvh] min-w-[12rem] flex-col overflow-y-auto bg-primary px-2 text-white"
+        className="flex h-full min-h-[100dvh] min-w-[10rem] flex-col overflow-y-auto bg-primary px-2 text-white"
       >
         <div className="flex flex-col py-6">
           <span className="px-2 text-2xl">New ERP</span>
