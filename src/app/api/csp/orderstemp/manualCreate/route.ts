@@ -11,19 +11,15 @@ const api = axios.create({
 });
 
 export const POST = async (request: Request) => {
-  const session = await getServerSession(OPTIONS);
-  if (!session || !session.user) {
-    return NextResponse.json({}, { status: 400, statusText: 'Invaild User.' });
-  }
+  // const session = await getServerSession(OPTIONS);
+  // if (!session || !session.user) {
+  //   return NextResponse.json({}, { status: 400, statusText: 'Invaild User.' });
+  // }
   try {
     const body = await request.json();
     const erpOrder = { ...body };
 
     const res = await api.request({ url: '/order/manualCreate', method: 'POST', data: { erpOrder } });
-
-    if (res.status !== 200) {
-      return NextResponse.json({}, { status: res.status, statusText: res.statusText });
-    }
 
     const { erpSerialNumber, orderId } = res.data;
     if (erpSerialNumber && orderId) {
@@ -43,6 +39,7 @@ export const POST = async (request: Request) => {
       return NextResponse.json({}, { status: 400, statusText: 'NewCSP Response Crashed.' });
     }
   } catch (error: any) {
+    console.log(error.response.statusText);
     let statusText = 'manualCreate Error! ';
     if (error.response) statusText = error.response.statusText;
     return NextResponse.json({}, { status: 400, statusText });
