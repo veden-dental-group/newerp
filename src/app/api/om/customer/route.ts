@@ -8,7 +8,7 @@ export const GET = async () => {
     SELECT
         *
     FROM
-        om_customer_header
+        oms_customer_header
     WHERE
         ( company_id = 410
           AND customer_code = 'U132999' )
