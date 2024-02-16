@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
 import { QueryTypes } from 'sequelize';
 
+export const dynamic = 'force-dynamic';
 export const GET = async () => {
   try {
     const queryStr = `SELECT * FROM sys_authority`;
