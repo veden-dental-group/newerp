@@ -39,7 +39,7 @@ type Customers = {
 };
 
 export const getCustomerList = async ({ signal }: { signal: AbortSignal }): Promise<Customers[]> => {
-  const res = await fetch('/api/om/customer', { signal });
+  const res = await fetch('/api/oms/customer', { signal });
   if (res.status !== 200) {
     throw new Error(res.statusText);
   }
