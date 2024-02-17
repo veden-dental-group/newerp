@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 
 import { FaCheck } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { GrSend } from 'react-icons/gr';
 import { PiCaretUpDownBold } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 
@@ -46,6 +47,21 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     defaultValues: HeaderFormDefaultValue,
   });
   const { data: customers, isPending, isError } = useCustomerList();
+
+  const handelManualCreateMany = async (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      const res = await fetch('/api/csp/orderstemp/manualCreateMany', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderdate: form.getValues('date.from') }),
+      });
+      console.log(await res.json());
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -136,6 +152,9 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
             </Popover>
           )}
         </TableHeaderOption>
+        <Button variant={'pureIcon'} size={'icon'} onClick={handelManualCreateMany}>
+          <GrSend className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-destructive p-2 text-white hover:bg-destructive/50" />
+        </Button>
       </TableHeaderContainer>
     </Form>
   );
