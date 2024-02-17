@@ -29,10 +29,10 @@ export const GET = async (request: Request) => {
 
     if (from) {
       if (to) {
-        queryStr += `AND TRUNC(a.order_date) >= TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') `;
-        queryStr += `AND TRUNC(a.order_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') `;
+        queryStr += `AND TRUNC(a.create_date) >= TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') `;
+        queryStr += `AND TRUNC(a.create_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') `;
       } else {
-        queryStr += `AND TRUNC(a.order_date) = TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') `;
+        queryStr += `AND TRUNC(a.create_date) = TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') `;
       }
     }
     if (rx) queryStr += `AND order_rx LIKE '%${rx}%' `;

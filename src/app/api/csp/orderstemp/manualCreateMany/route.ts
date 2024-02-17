@@ -23,12 +23,14 @@ export const POST = async (request: Request) => {
       AND a.trans_flag = 'F' `;
 
       queryStr += ' ORDER BY a.csp_serial_no ';
-      const manualOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
+      const selectOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
 
-      let count = 0;
-      if (manualOrders && manualOrders.length) {
+      let countCreate = 0;
+      let countUpdate = 0;
+      if (selectOrders && selectOrders.length) {
+        // manualCreateMany 建newcsp單  沒有CSP_UUID = newcsp尚未建單
+        const manualOrders = selectOrders.filter((el: any) => el.CSP_UUID === null);
         const res = await api.request({ url: '/order/manualCreateMany', method: 'POST', data: { manualOrders } });
-
         if (res.data) {
           const { cspOrders } = res.data;
           for (const cspOrder of cspOrders) {
@@ -44,13 +46,38 @@ export const POST = async (request: Request) => {
                 CSP_SERIAL_NO=${erpSerialNumber} `;
 
             const upd = await oracleCsp.query(queryStr, { type: QueryTypes.UPDATE });
-            if (upd) count++;
+            if (upd) countCreate++;
+          }
+        } else {
+          throw new Error('NewCSP Response Crashed.');
+        }
+
+        // manualUpdateMany 更新newcsp單
+        const updateOrders = selectOrders.filter((el: any) => el.CSP_UUID !== null);
+        const res2 = await api.request({ url: '/order/manualUpdateMany', method: 'POST', data: { updateOrders } });
+        if (res2.data) {
+          const { cspOrders } = res2.data;
+          for (const cspOrder of cspOrders) {
+            const { erpSerialNumber } = cspOrder;
+            if (!erpSerialNumber) continue;
+            const queryStr = `
+            UPDATE
+                csp_order_header_temp
+            SET
+                TRANS_FLAG='T',
+                TRANS_DATE=TO_DATE('${dayjs().format('YYYY-MM-DD HH:mm:ss')}','YYYY-MM-DD hh24:mi:ss')
+            WHERE
+                CSP_SERIAL_NO=${erpSerialNumber} `;
+
+            const upd = await oracleCsp.query(queryStr, { type: QueryTypes.UPDATE });
+            if (upd) countUpdate++;
           }
         } else {
           throw new Error('NewCSP Response Crashed.');
         }
       }
-      return NextResponse.json({ count });
+
+      return NextResponse.json({ countCreate, countUpdate });
     } else {
       throw new Error('Invalid Request.');
     }
