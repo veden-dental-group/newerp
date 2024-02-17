@@ -36,6 +36,7 @@ export default function Orderstemp() {
     { key: 'CUSTOMER_CODE', name: '客戶編號' },
     { key: 'CUSTOMER_SHORT_NAME', name: '客戶名稱' },
     { key: 'CREATE_DATE', name: '建立日期', type: 'date' },
+    { key: 'ORDER_DATE', name: '訂單日期', type: 'date' },
     { key: 'ORDER_RX', name: 'RX#' },
     { key: 'ORDER_CLINIC', name: '診所' },
     { key: 'ORDER_PATIENT', name: '病患' },

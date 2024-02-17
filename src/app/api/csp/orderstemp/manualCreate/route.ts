@@ -11,10 +11,10 @@ const api = axios.create({
 });
 
 export const POST = async (request: Request) => {
-  // const session = await getServerSession(OPTIONS);
-  // if (!session || !session.user) {
-  //   return NextResponse.json({}, { status: 400, statusText: 'Invaild User.' });
-  // }
+  const session = await getServerSession(OPTIONS);
+  if (!session || !session.user) {
+    return NextResponse.json({}, { status: 400, statusText: 'Invaild User.' });
+  }
   try {
     const body = await request.json();
     const erpOrder = { ...body };
@@ -39,7 +39,6 @@ export const POST = async (request: Request) => {
       return NextResponse.json({}, { status: 400, statusText: 'NewCSP Response Crashed.' });
     }
   } catch (error: any) {
-    console.log(error.response.statusText);
     let statusText = 'manualCreate Error! ';
     if (error.response) statusText = error.response.statusText;
     return NextResponse.json({}, { status: 400, statusText });
