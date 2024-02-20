@@ -12,28 +12,6 @@ export default function Home() {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const submitTEST = async () => {
-    const input = inputRef.current!.value.trim();
-    if (!input) return;
-    setIsLoading(true);
-    const res = await fetch('/api/query/procedure', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        input,
-      }),
-    });
-    const { status, result } = await res.json();
-    setIsLoading(false);
-    if (status === 200) {
-      setHasError(null);
-    } else {
-      setHasError(result);
-    }
-  };
-
   const submitHandler = async () => {
     const input = inputRef.current!.value.trim();
     if (!input) return;
@@ -86,7 +64,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="flex max-h-screen max-w-[calc(100vw-12rem)] flex-col items-center justify-between p-4">
       <div className="flex w-full flex-row items-center gap-6">
         <Textarea disabled={isLoading} ref={inputRef} />
         <Button disabled={isLoading} onClick={submitHandler}>
@@ -94,9 +72,6 @@ export default function Home() {
         </Button>
         <Button disabled={isLoading || entries.length === 0 || !!hasError} onClick={exportHandler}>
           Export
-        </Button>
-        <Button disabled={isLoading} onClick={submitTEST}>
-          TEST
         </Button>
       </div>
       {isLoading ? (
@@ -109,7 +84,7 @@ export default function Home() {
             <TableHeader>
               <TableRow>
                 {headers.map((el) => (
-                  <TableHead key={el.name} className="">
+                  <TableHead key={el.name} className="p-2">
                     {el.name}
                   </TableHead>
                 ))}
@@ -119,7 +94,7 @@ export default function Home() {
               {entries.map((entry, rowIndex) => (
                 <TableRow key={rowIndex}>
                   {headers.map((el) => (
-                    <TableCell key={el.name} className="">
+                    <TableCell key={el.name} className="p-2">
                       {entry[el.name]}
                     </TableCell>
                   ))}
@@ -129,6 +104,6 @@ export default function Home() {
           </Table>
         )
       )}
-    </main>
+    </div>
   );
 }
