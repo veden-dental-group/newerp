@@ -33,13 +33,13 @@ function Tree({ data }: { data: TreeDTO[] | TreeDTO }) {
                 </AccordionPrimitive.Item>
               </AccordionPrimitive.Root>
             ) : (
-              <Leaf name={item.MENU_NAME} />
+              <Leaf name={item.MENU_NAME} code={item.MENU_CODE} />
             )}
           </li>
         ))
       ) : (
         <li>
-          <Leaf name={data.MENU_NAME} />
+          <Leaf name={data.MENU_NAME} code={data.MENU_CODE} />
         </li>
       )}
     </ul>
@@ -48,9 +48,9 @@ function Tree({ data }: { data: TreeDTO[] | TreeDTO }) {
 
 export default Tree;
 
-function Leaf({ name }: { name: string }) {
+function Leaf({ name, code }: { name: string; code: string }) {
   return (
-    <a href="#" className={'flex flex-1 items-center py-1 font-medium hover:scale-105 hover:underline'}>
+    <a href={`/${code}`} className={'flex flex-1 items-center py-1 font-medium hover:scale-105 hover:underline'}>
       <ChevronRight className="h-4 w-4 shrink-0 opacity-0" />
       {name}
     </a>
