@@ -167,7 +167,7 @@ export default function Orderstemp() {
 
   return (
     <div className="flex max-h-screen flex-col items-center gap-4 p-6">
-      <h1>此頁開發測試用，Case管理請至「業務模組/CSP後台作業」使用</h1>
+      <h1 className="text-4xl font-bold">此頁開發測試用，Case管理請至「業務模組/CSP後台作業」使用</h1>
       <div className="flex w-full">
         <Header submitHandler={handleSearch} btnRef={searchBtn} />
       </div>
@@ -246,7 +246,7 @@ export default function Orderstemp() {
                                   </TooltipTrigger>
                                   <TooltipContent>更新</TooltipContent>
                                 </Tooltip>
-                                {entry['TRANS_FLAG'] === 'F' ? (
+                                {entry['TRANS_FLAG'] === 'F' && !entry['CSP_UUID'] ? (
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button

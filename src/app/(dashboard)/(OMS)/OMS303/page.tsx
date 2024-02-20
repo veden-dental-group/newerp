@@ -49,7 +49,9 @@ export default function Orderstemp() {
     const { from, to } = value.date;
     try {
       setIsLoading(true);
-      const res = await fetch(`/api/csp/orderstemp/search?${searchParamsBuilder({ ...value, from, to })}`);
+      const res = await fetch(
+        `/api/csp/orderstemp/search?${searchParamsBuilder({ ...value, from, to, orderstyle: 1 })}`,
+      );
       setIsLoading(false);
       if (res.status === 200) {
         const { result } = await res.json();
@@ -245,7 +247,7 @@ export default function Orderstemp() {
                                   </TooltipTrigger>
                                   <TooltipContent>更新</TooltipContent>
                                 </Tooltip>
-                                {entry['TRANS_FLAG'] === 'F' ? (
+                                {entry['TRANS_FLAG'] === 'F' && !entry['CSP_UUID'] ? (
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
