@@ -32,6 +32,7 @@ export default function Orderstemp() {
   const headers = [
     { key: 'CSP_SERIAL_NO', name: '流水號', type: 'copy' },
     { key: 'ACTIONS', name: 'ACTIONS' },
+    { key: 'CSP_ORDER_STATUS', name: '狀態' },
     { key: 'ORDER_STYLE_ID', name: '樣式' },
     { key: 'CUSTOMER_CODE', name: '客戶編號' },
     { key: 'CUSTOMER_SHORT_NAME', name: '客戶名稱' },
@@ -167,6 +168,16 @@ export default function Orderstemp() {
     return label;
   };
 
+  const transStatus = (status: string) => {
+    let label = status;
+    if (status === 'Y') label = 'Submitted';
+    if (status === 'I') label = 'In Progress';
+    if (status === 'S') label = 'Shipped';
+    if (status === 'C') label = 'Cancelled';
+    if (status === 'O') label = 'On Hold';
+    return label;
+  };
+
   return (
     <div className="flex max-h-screen flex-col items-center gap-4 p-6">
       <div className="flex w-full">
@@ -291,6 +302,8 @@ export default function Orderstemp() {
                                 <span>{transStyle(val)}</span>
                                 <ImListNumbered className="cursor-pointer text-primary hover:text-pin" />
                               </>
+                            ) : el.key === 'CSP_ORDER_STATUS' ? (
+                              <span>{transStatus(val)}</span>
                             ) : (
                               <span>{val}</span>
                             )}
