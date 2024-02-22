@@ -18,6 +18,9 @@ export const POST = async (req: Request) => {
       if (category === 'conventional') style_id = 2;
       if (category === 'design') style_id = 3;
     }
+    const findQuery = `SELECT * FROM csp.csp_order_header_temp WHERE CSP_UUID='${csp_order_id}' `;
+    const findOrder = await oracleCsp.query(findQuery, { type: QueryTypes.SELECT });
+    if (findOrder && findOrder.length) return NextResponse.json({ result: findOrder });
     const queryStr = `
 					DECLARE
 							i_csp_uuid VARCHAR2(500);
