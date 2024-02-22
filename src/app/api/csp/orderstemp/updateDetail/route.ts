@@ -19,28 +19,22 @@ export const POST = async (request: Request) => {
     const body = await request.json();
     const data = {
       orderId: body.CSP_UUID,
-      o_order_code: body.ORDER_CODE,
-      o_order_rx: body.ORDER_RX,
-      o_serial_no: body.CSP_SERIAL_NO,
-      o_order_clinic: body.ORDER_CLINIC,
-      o_order_patient: body.ORDER_PATIENT,
-      o_order_doctor: body.ORDER_DOCTOR,
-      o_order_tracking: '',
-      o_order_product: body.PRODUCT_NAME2,
+      orderNumber: body.ORDER_CODE,
+      rx: body.ORDER_RX,
+      erpSerialNumber: body.CSP_SERIAL_NO,
+      clinic: body.ORDER_CLINIC,
+      patient: body.ORDER_PATIENT,
+      doctor: body.ORDER_DOCTOR,
+      trackingNumber: body.TRACKING_NO,
+      productName: body.PRODUCT_NAME2,
+      orderStyle: body.ORDER_STYLE_ID,
+      orderStatus: body.CSP_ORDER_STATUS,
     };
 
     const res1 = await api.request({ url: '/order/updateDetail', method: 'PATCH', data });
-    const res2 = await api.request({
-      url: '/order/updateStatus',
-      method: 'POST',
-      data: { orderId: body.CSP_UUID, status: 'In Progress' },
-    });
 
     if (res1.status !== 200) {
       return NextResponse.json({}, { status: res1.status, statusText: res1.statusText });
-    }
-    if (res2.status !== 200) {
-      return NextResponse.json({}, { status: res2.status, statusText: res2.statusText });
     }
     const queryStr = `
     UPDATE
@@ -53,7 +47,7 @@ export const POST = async (request: Request) => {
 
     await oracleCsp.query(queryStr, { type: QueryTypes.UPDATE });
 
-    return NextResponse.json({ result: res2.data });
+    return NextResponse.json({ result: res1.data });
   } catch (error: any) {
     let statusText = 'UpdateDetail Error! ';
     if (error.response) statusText = error.response.statusText;
