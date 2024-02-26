@@ -1,9 +1,12 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import Tree, { TreeDTO } from '@/components/Tree';
+import SideBar from './SideBar';
+
 import { IoLogOutOutline } from 'react-icons/io5';
 import { BiLayerMinus } from 'react-icons/bi';
 import { FaHome } from 'react-icons/fa';
+import { FaCaretLeft, FaCaretRight } from 'react-icons/fa6';
 
 import Link from 'next/link';
 
@@ -39,28 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="relative flex max-h-[100dvh] w-full max-w-[100dvw] bg-secondary/50">
-      <div
-        id="sidebar"
-        className="flex h-full min-h-[100dvh] min-w-[10rem] flex-col overflow-y-auto bg-primary px-2 text-white"
-      >
-        <div className="flex flex-col py-6">
-          <span className="px-2 text-2xl">New ERP</span>
-          <span className="px-2 text-base">用戶：dev</span>
-          <span className="px-2 text-base">廠別：VD210</span>
-          <div className="flex justify-start">
-            <Link href={'/'} className="h-10 w-10 p-2 hover:text-pin">
-              <FaHome className="h-6 w-6" />
-            </Link>
-            <Link href={'/orderstemp'} className="h-10 w-10 p-2 hover:text-pin">
-              <BiLayerMinus className="h-6 w-6" />
-            </Link>
-            <Link href={'/logout'} className="h-10 w-10 p-2 hover:text-pin">
-              <IoLogOutOutline className="h-6 w-6" />
-            </Link>
-          </div>
-        </div>
-        <Tree data={newArray} />
-      </div>
+      <SideBar treeArray={newArray} />
       <div className="mx-0 flex h-full w-full flex-col">{children}</div>
     </div>
   );
