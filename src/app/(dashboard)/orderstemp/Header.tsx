@@ -19,6 +19,8 @@ import { FaCheck } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { GrSend } from 'react-icons/gr';
 import { PiCaretUpDownBold } from 'react-icons/pi';
+import { MdLocalParking } from 'react-icons/md';
+
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
@@ -53,6 +55,21 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     event.stopPropagation();
     try {
       const res = await fetch('/api/csp/orderstemp/manualCreateMany', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderdate: form.getValues('date.from') }),
+      });
+      console.log(await res.json());
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleNoticePLS = async (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      const res = await fetch('/api/csp/arrivalNotice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderdate: form.getValues('date.from') }),
@@ -154,6 +171,9 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
         </TableHeaderOption>
         <Button variant={'pureIcon'} size={'icon'} onClick={handelManualCreateMany}>
           <GrSend className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-destructive p-2 text-white hover:bg-destructive/50" />
+        </Button>
+        <Button variant={'pureIcon'} size={'icon'} onClick={handleNoticePLS}>
+          <MdLocalParking className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
         </Button>
       </TableHeaderContainer>
     </Form>
