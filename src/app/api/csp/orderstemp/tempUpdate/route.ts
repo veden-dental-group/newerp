@@ -28,9 +28,10 @@ export const POST = async (request: Request) => {
         // manualUpdateMany 更新newcsp單
         const updateOrders = selectOrders.filter((el: any) => el.CSP_UUID !== null);
         const res = await api.request({ url: '/order/tempUpdate', method: 'POST', data: { updateOrders } });
+        return NextResponse.json({ res: res.data });
+      } else {
+        return NextResponse.json('Orders not found');
       }
-
-      return NextResponse.json('success');
     } else {
       throw new Error('Invalid Request.');
     }
