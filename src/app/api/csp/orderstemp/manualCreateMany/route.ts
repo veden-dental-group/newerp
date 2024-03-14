@@ -19,8 +19,7 @@ export const POST = async (request: Request) => {
       ON a.csp_customer_id = c.customer_id 
       LEFT JOIN csp.csp_order_line_temp b 
       ON a.order_id = b.order_id AND b.order_line_no = 1 
-      WHERE a.order_date >= TO_DATE(${dayjs(orderdate).format('YYYYMMDD')}, 'YYYYMMDD')
-      AND a.trans_flag = 'F' `;
+      WHERE a.trans_flag = 'F' `;
 
       queryStr += ' ORDER BY a.csp_serial_no ';
       const selectOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
