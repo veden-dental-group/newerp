@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { FaCheck } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { GrSend } from 'react-icons/gr';
+import { MdCloudSync } from 'react-icons/md';
 import { PiCaretUpDownBold } from 'react-icons/pi';
 import { MdLocalParking } from 'react-icons/md';
 
@@ -65,11 +66,11 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     }
   };
 
-  const handleNoticePLS = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleTempUpdate = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     event.stopPropagation();
     try {
-      const res = await fetch('/api/csp/arrivalNotice', {
+      const res = await fetch('/api/csp/orderstemp/tempUpdate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderdate: form.getValues('date.from') }),
@@ -172,8 +173,8 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
         <Button variant={'pureIcon'} size={'icon'} onClick={handelManualCreateMany}>
           <GrSend className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-destructive p-2 text-white hover:bg-destructive/50" />
         </Button>
-        <Button variant={'pureIcon'} size={'icon'} onClick={handleNoticePLS}>
-          <MdLocalParking className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
+        <Button variant={'pureIcon'} size={'icon'} onClick={handleTempUpdate}>
+          <MdCloudSync className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
         </Button>
       </TableHeaderContainer>
     </Form>
