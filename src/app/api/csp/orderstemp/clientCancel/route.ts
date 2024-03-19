@@ -16,7 +16,7 @@ export const PATCH = async (req: Request) => {
         TRANS_FLAG='T', 
         TRANS_DATE=TO_DATE('${dayjs().format('YYYY-MM-DD HH:mm:ss')}','YYYY-MM-DD hh24:mi:ss')
     WHERE
-        CSP_UUID='${orderId}' AND TRANS_FLAG='F' AND ORDER_ID IS NULL `;
+        CSP_UUID='${orderId}' AND ORDER_ID IS NULL `;
 
     const upd = await oracleCsp.query(queryStr, { type: QueryTypes.UPDATE });
 
