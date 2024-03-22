@@ -1,6 +1,6 @@
 import { asOptionalField } from '@/lib/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { useCustomerList } from '@/features/customer/getCustomers';
@@ -14,13 +14,15 @@ import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { FaCheck } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
-import { GrSend } from 'react-icons/gr';
-import { MdCloudSync } from 'react-icons/md';
-import { PiCaretUpDownBold } from 'react-icons/pi';
-import { MdLocalParking } from 'react-icons/md';
+import { IoMdCloseCircle } from 'react-icons/io';
+import { GrSend, GrTasks } from 'react-icons/gr';
+import { RiDeviceFill } from 'react-icons/ri';
+import { PiCaretUpDownBold, PiPrinterBold } from 'react-icons/pi';
 
 import { twMerge } from 'tailwind-merge';
 
@@ -50,6 +52,8 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     defaultValues: HeaderFormDefaultValue,
   });
   const { data: customers, isPending, isError } = useCustomerList();
+  const { toast } = useToast();
+  const [isFetch, setIsFetch] = useState(false);
 
   const handelManualCreateMany = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -66,19 +70,30 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     }
   };
 
-  const handleTempUpdate = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleLuxGET = async (event: React.MouseEvent<HTMLElement>, url: string) => {
     event.preventDefault();
     event.stopPropagation();
+    setIsFetch(true);
     try {
-      const res = await fetch('/api/csp/orderstemp/tempUpdate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderdate: form.getValues('date.from') }),
+      const res = await fetch('/api/luxlink/' + url);
+      const text = await res.json();
+      toast({
+        title: 'Done!',
+        duration: 10000,
+        description: text,
+        variant: 'success',
+        action: <FaCheck />,
       });
-      console.log(await res.json());
     } catch (error) {
       console.error(error);
+      toast({
+        title: 'Error!',
+        duration: 3000,
+        variant: 'destructive',
+        action: <IoMdCloseCircle />,
+      });
     }
+    setIsFetch(false);
   };
 
   return (
@@ -170,12 +185,52 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
             </Popover>
           )}
         </TableHeaderOption>
-        <Button variant={'pureIcon'} size={'icon'} onClick={handelManualCreateMany}>
-          <GrSend className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-destructive p-2 text-white hover:bg-destructive/50" />
-        </Button>
-        <Button variant={'pureIcon'} size={'icon'} onClick={handleTempUpdate}>
-          <MdCloudSync className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
-        </Button>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={'pureIcon'} size={'icon'} onClick={handelManualCreateMany}>
+                <GrSend className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-destructive p-2 text-white hover:bg-destructive/50" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>批量同步</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleLuxGET(e, 'printer')}>
+                {isFetch ? (
+                  <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
+                ) : (
+                  <PiPrinterBold className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>LUXLINK PRINTER</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleLuxGET(e, 'device')}>
+                {isFetch ? (
+                  <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
+                ) : (
+                  <RiDeviceFill className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>LUXLINK DEVICE</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleLuxGET(e, 'task')}>
+                {isFetch ? (
+                  <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
+                ) : (
+                  <GrTasks className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>LUXLINK TASK</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </TableHeaderContainer>
     </Form>
   );
