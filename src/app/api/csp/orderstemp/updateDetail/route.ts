@@ -17,19 +17,7 @@ export const POST = async (request: Request) => {
   }
   try {
     const body = await request.json();
-    const data = {
-      orderId: body.CSP_UUID,
-      orderNumber: body.ORDER_CODE,
-      rx: body.ORDER_RX,
-      erpSerialNumber: body.CSP_SERIAL_NO,
-      clinic: body.ORDER_CLINIC,
-      patient: body.ORDER_PATIENT,
-      doctor: body.ORDER_DOCTOR,
-      trackingNumber: body.TRACKING_NO,
-      productName: body.PRODUCT_NAME2,
-      orderStyle: body.ORDER_STYLE_ID,
-      orderStatus: body.CSP_ORDER_STATUS,
-    };
+    const data = { ...body };
 
     const res1 = await api.request({ url: '/order/updateDetail', method: 'PATCH', data });
 
