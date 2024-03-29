@@ -75,7 +75,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     event.stopPropagation();
     setIsFetch(true);
     try {
-      const res = await fetch('/api/luxlink/' + url, { method: 'POST' });
+      const res = await fetch('/api/luxlink/' + url);
       const text = await res.json();
       toast({
         title: 'Done!',

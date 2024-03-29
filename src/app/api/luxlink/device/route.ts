@@ -5,7 +5,8 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const POST = async (request: Request) => {
+export const dynamic = 'force-dynamic';
+export const GET = async (request: Request) => {
   try {
     const res = await api.request({ url: '/device', method: 'GET' });
 
