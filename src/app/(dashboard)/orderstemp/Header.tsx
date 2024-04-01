@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { useCustomerList } from '@/features/customer/getCustomers';
+import axios from 'axios';
 
 import LoadingSpinner from '@/components/LoadingSpinner';
 import TableHeaderContainer from '@/components/table/TableHeaderContainer';
@@ -75,8 +76,8 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     event.stopPropagation();
     setIsFetch(true);
     try {
-      const res = await fetch('/api/luxlink/' + url);
-      const text = await res.json();
+      const res = await axios.get('/api/luxlink/' + url, { timeout: 300000 });
+      const text = await res.data;
       toast({
         title: 'Done!',
         duration: 10000,
