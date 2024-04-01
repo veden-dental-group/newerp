@@ -3,7 +3,10 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['sequelize', 'oracledb'],
   },
-  staticPageGenerationTimeout: 600,
+  serverRuntimeConfig: {
+    apiTimeout: 300000,
+  },
+  staticPageGenerationTimeout: 300,
 };
 
 module.exports = nextConfig;
