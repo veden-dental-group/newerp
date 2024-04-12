@@ -217,9 +217,12 @@ export default function Orderstemp() {
                                   size="smicon"
                                   onClick={() => {
                                     const url: string = entry['CSP_FILE_URL'] || '';
+                                    const filename: string = entry['CSP_FILE_NAME'] || '';
                                     if (url) {
                                       const startIndex = url.indexOf('/newcsp/') + '/newcsp/'.length;
-                                      const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + url.slice(startIndex);
+                                      const newUrl = url.replace(filename, '').slice(startIndex);
+                                      const newFilename = encodeURIComponent(filename);
+                                      const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + newUrl + newFilename;
                                       window.open(downloadUrl.replace(/\+/gm, ' '));
                                     } else {
                                       toast({
@@ -240,7 +243,21 @@ export default function Orderstemp() {
                                 <Button
                                   variant="pureIcon"
                                   size="smicon"
-                                  onClick={() => router.replace(entry['CSP_FILE_URL'] || '')}
+                                  onClick={() => {
+                                    const url: string = entry['CSP_FILE_URL'] || '';
+                                    const filename: string = entry['CSP_FILE_NAME'] || '';
+                                    if (url && filename) {
+                                      const newUrl = url.replace(filename, '');
+                                      const newFilename = encodeURIComponent(filename);
+                                      router.replace(newUrl + newFilename);
+                                    } else {
+                                      toast({
+                                        title: '檔案未同步到s3!',
+                                        duration: 1500,
+                                        variant: 'destructive',
+                                      });
+                                    }
+                                  }}
                                 >
                                   <TbWorldDownload />
                                 </Button>
