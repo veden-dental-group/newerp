@@ -35,7 +35,7 @@ export default function Orderstemp() {
     { key: 'CSP_ORDER_STATUS', name: '狀態' },
     { key: 'ORDER_STYLE_ID', name: '樣式' },
     { key: 'CUSTOMER_CODE', name: '客戶編號' },
-    { key: 'CUSTOMER_SHORT_NAME', name: '客戶名稱' },
+    { key: 'CUSTOMER_NEW_NAME', name: '客戶名稱' },
     { key: 'CREATE_DATE', name: '建立日期', type: 'date' },
     { key: 'ORDER_RX', name: 'RX#' },
     { key: 'ORDER_CLINIC', name: '診所' },

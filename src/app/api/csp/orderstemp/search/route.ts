@@ -17,7 +17,7 @@ export const GET = async (request: Request) => {
     const { from, to, rx, customer, filename, orderstyle, orderstatus } = searchParamsParser(url, fields);
 
     let queryStr = `
-    SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name 
+    SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name, c.customer_short_code
     FROM csp.csp_order_header_temp a 
     JOIN erp.oms_customer_header  c 
     ON a.csp_customer_id = c.customer_id 
@@ -46,7 +46,15 @@ export const GET = async (request: Request) => {
 
     if (res) {
       const statusText = res.length ? '' : 'Data Not Found.';
-      return NextResponse.json({ result: res }, { status: 200, statusText });
+      const colums = res[0].map((el: any) => {
+        if (el['CUSTOMER_CODE'] == 'U132999') {
+          el['CUSTOMER_NEW_NAME'] = 'PLS-' + el['CUSTOMER_SHORT_CODE'];
+        } else {
+          el['CUSTOMER_NEW_NAME'] = el['CUSTOMER_SHORT_NAME'];
+        }
+        return el;
+      });
+      return NextResponse.json({ result: [colums, res[1]] }, { status: 200, statusText });
     } else {
       return NextResponse.json({}, { status: 400, statusText: 'Query Failed.' });
     }
