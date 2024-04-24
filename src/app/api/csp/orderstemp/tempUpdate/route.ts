@@ -10,7 +10,7 @@ const api = axios.create({
 
 export const POST = async (request: Request) => {
   try {
-    const { from, to } = await request.json();
+    const { from, to, customer } = await request.json();
     if (from && to) {
       let queryStr = `
       SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name 
@@ -22,6 +22,7 @@ export const POST = async (request: Request) => {
       WHERE TRUNC(a.create_date) >= TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') 
       AND TRUNC(a.create_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') `;
 
+      if (customer) queryStr += `AND csp_customer_id = ${customer} `;
       queryStr += ' ORDER BY a.csp_serial_no ';
       const selectOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
 

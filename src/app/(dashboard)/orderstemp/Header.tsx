@@ -74,7 +74,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     }
   };
 
-  const handleTempUpdate = async (event: React.MouseEvent<HTMLElement>, url: string) => {
+  const handleTempUpdate = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     event.stopPropagation();
     try {
@@ -204,7 +204,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleTempUpdate(e, 'task')}>
+              <Button variant={'pureIcon'} size={'icon'} onClick={handleTempUpdate}>
                 {isFetch ? (
                   <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
                 ) : (
