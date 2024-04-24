@@ -1,6 +1,6 @@
 import { asOptionalField } from '@/lib/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { useCustomerList } from '@/features/customer/getCustomers';
@@ -24,8 +24,10 @@ import { IoMdCloseCircle } from 'react-icons/io';
 import { GrSend, GrTasks } from 'react-icons/gr';
 import { RiDeviceFill } from 'react-icons/ri';
 import { PiCaretUpDownBold, PiPrinterBold } from 'react-icons/pi';
+import { BsPaperclip } from 'react-icons/bs';
 
 import { twMerge } from 'tailwind-merge';
+import { Label } from '@radix-ui/react-select';
 
 type Props = {
   submitHandler: (value: HeaderForm) => void;
@@ -48,6 +50,7 @@ export const HeaderFormDefaultValue: HeaderForm = {
 };
 
 const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
+  const fileRef = useRef<HTMLInputElement>(null);
   const form = useForm<HeaderForm>({
     resolver: zodResolver(formSchema),
     defaultValues: HeaderFormDefaultValue,
@@ -71,30 +74,34 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     }
   };
 
-  const handleLuxGET = async (event: React.MouseEvent<HTMLElement>, url: string) => {
+  const handleTempUpdate = async (event: React.MouseEvent<HTMLElement>, url: string) => {
     event.preventDefault();
     event.stopPropagation();
-    setIsFetch(true);
     try {
-      const res = await axios.get('/api/luxlink/' + url, { timeout: 300000 });
-      const text = await res.data;
-      toast({
-        title: 'Done!',
-        duration: 10000,
-        description: text,
-        variant: 'success',
-        action: <FaCheck />,
+      const res = await fetch('/api/csp/orderstemp/manualCreateMany', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: form.getValues('date.from'), to: form.getValues('date.to') }),
       });
+      console.log(await res.json());
     } catch (error) {
       console.error(error);
-      toast({
-        title: 'Error!',
-        duration: 3000,
-        variant: 'destructive',
-        action: <IoMdCloseCircle />,
-      });
     }
-    setIsFetch(false);
+  };
+
+  const handleUploadPDF = async (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      console.log(e.target.files[0], reader.readAsDataURL(e.target.files[0]));
+
+      const formData = new FormData();
+      formData.append('file', e.target.files[0]);
+      const res = await fetch('/api/pdf', { method: 'POST', body: formData });
+      console.log(await res.json());
+
+      fileRef.current!.value = '';
+    }
   };
 
   return (
@@ -197,31 +204,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleLuxGET(e, 'printer')}>
-                {isFetch ? (
-                  <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
-                ) : (
-                  <PiPrinterBold className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>LUXLINK PRINTER</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleLuxGET(e, 'device')}>
-                {isFetch ? (
-                  <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
-                ) : (
-                  <RiDeviceFill className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>LUXLINK DEVICE</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleLuxGET(e, 'task')}>
+              <Button variant={'pureIcon'} size={'icon'} onClick={(e) => handleTempUpdate(e, 'task')}>
                 {isFetch ? (
                   <LoadingSpinner className="m-0 h-6 w-6 text-primary" />
                 ) : (
@@ -230,6 +213,25 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>LUXLINK TASK</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <>
+                <label htmlFor="attachment">
+                  <BsPaperclip className="h-10 w-10 shrink-0 cursor-pointer rounded-md bg-primary p-2 text-white hover:bg-primary/50" />
+                </label>
+                <Input
+                  ref={fileRef}
+                  type="file"
+                  multiple={false}
+                  className="hidden"
+                  name="attachment"
+                  id="attachment"
+                  onChange={handleUploadPDF}
+                />
+              </>
+            </TooltipTrigger>
+            <TooltipContent>PDF UPLOAD</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </TableHeaderContainer>

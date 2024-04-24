@@ -10,8 +10,8 @@ const api = axios.create({
 
 export const POST = async (request: Request) => {
   try {
-    const { orderdate } = await request.json();
-    if (orderdate) {
+    const { from, to } = await request.json();
+    if (from && to) {
       let queryStr = `
       SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name 
       FROM csp.csp_order_header_temp a 
@@ -19,7 +19,8 @@ export const POST = async (request: Request) => {
       ON a.csp_customer_id = c.customer_id 
       LEFT JOIN csp.csp_order_line_temp b 
       ON a.order_id = b.order_id AND b.order_line_no = 1 
-      WHERE a.order_date >= TO_DATE(${dayjs(orderdate).format('YYYYMMDD')}, 'YYYYMMDD') `;
+      WHERE TRUNC(a.create_date) >= TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') 
+      AND TRUNC(a.create_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') `;
 
       queryStr += ' ORDER BY a.csp_serial_no ';
       const selectOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
