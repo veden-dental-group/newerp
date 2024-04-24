@@ -78,10 +78,14 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
     event.preventDefault();
     event.stopPropagation();
     try {
-      const res = await fetch('/api/csp/orderstemp/manualCreateMany', {
+      const res = await fetch('/api/csp/orderstemp/tempUpdate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: form.getValues('date.from'), to: form.getValues('date.to') }),
+        body: JSON.stringify({
+          from: form.getValues('date.from'),
+          to: form.getValues('date.to'),
+          customer: form.getValues('customer'),
+        }),
       });
       console.log(await res.json());
     } catch (error) {
@@ -212,7 +216,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>LUXLINK TASK</TooltipContent>
+            <TooltipContent>TEMP UPDATE</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
