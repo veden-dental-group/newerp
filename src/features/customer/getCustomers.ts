@@ -1,9 +1,10 @@
 import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 import { useQuery } from '@tanstack/react-query';
-type Customers = {
+export type Customers = {
   CUSTOMER_ID: number;
   COMPANY_ID: number;
   CUSTOMER_CODE: string;
+  CUSTOMER_SHORT_CODE: string;
   CUSTOMER_SHORT_NAME: string;
   COMPANY_NAME1?: string;
   COMPANY_NAME2?: string;

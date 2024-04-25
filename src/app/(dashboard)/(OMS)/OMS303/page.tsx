@@ -48,10 +48,17 @@ export default function Orderstemp() {
 
   const handleSearch = async (value: HeaderForm) => {
     const { from, to } = value.date;
+    const { customer } = value;
     try {
       setIsLoading(true);
       const res = await fetch(
-        `/api/csp/orderstemp/search?${searchParamsBuilder({ ...value, from, to, orderstyle: 1 })}`,
+        `/api/csp/orderstemp/search?${searchParamsBuilder({
+          ...value,
+          from,
+          to,
+          orderstyle: 1,
+          customer: Number(customer),
+        })}`,
       );
       setIsLoading(false);
       if (res.status === 200) {
