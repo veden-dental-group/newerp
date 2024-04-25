@@ -20,7 +20,7 @@ export const PATCH = async (req: Request) => {
 
     const upd = await oracleCsp.query(queryStr, { type: QueryTypes.UPDATE });
 
-    return NextResponse.json({ affectRows: upd[1] });
+    return NextResponse.json({ affectRows: upd[1] === 0 ? 1 : upd[1] });
   } catch (error) {
     console.error('error', error);
     return NextResponse.json({}, { status: 404, statusText: 'Query is invalid' });
