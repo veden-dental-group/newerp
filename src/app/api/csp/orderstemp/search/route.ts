@@ -13,8 +13,9 @@ export const GET = async (request: Request) => {
   try {
     const { company } = session.user;
     const url = new URL(request.url);
-    const fields = ['from', 'to', 'rx', 'customer', 'filename', 'orderstyle', 'orderstatus'];
-    const { from, to, rx, customer, filename, orderstyle, orderstatus } = searchParamsParser(url, fields);
+    const fields = ['from', 'to', 'rx', 'customer', 'filename', 'orderstyle', 'orderstatus', 'serial'];
+    const { from, to, rx, customer, filename, orderstyle, orderstatus, serial } = searchParamsParser(url, fields);
+    console.log(serial);
 
     let queryStr = `
     SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name, c.customer_short_code
@@ -35,11 +36,16 @@ export const GET = async (request: Request) => {
         queryStr += `AND TRUNC(a.create_date) = TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') `;
       }
     }
-    if (rx) queryStr += `AND order_rx LIKE '%${rx}%' `;
-    if (customer) queryStr += `AND csp_customer_id = ${customer} `;
-    if (filename) queryStr += `AND csp_file_name LIKE '%${filename}%' `;
-    if (orderstyle) queryStr += `AND order_style_id = ${Number(orderstyle)} `;
-    if (orderstatus && orderstatus !== 'All') queryStr += `AND csp_order_status = '${orderstatus}' `;
+    if (rx) queryStr += `AND a.order_rx LIKE '%${rx}%' `;
+    if (customer) queryStr += `AND a.csp_customer_id = ${customer} `;
+    if (filename) queryStr += `AND a.csp_file_name LIKE '%${filename}%' `;
+    if (orderstyle && orderstyle !== 'All') {
+      queryStr += `AND a.order_style_id = ${Number(orderstyle)} `;
+    } else {
+      queryStr += `AND a.order_style_id IN (1, 3) `;
+    }
+    if (orderstatus && orderstatus !== 'All') queryStr += `AND a.csp_order_status = '${orderstatus}' `;
+    if (serial) queryStr += `AND a.csp_serial_no = ${Number(serial)} `;
 
     queryStr += ' ORDER BY a.csp_serial_no ';
     const res = await oracleCsp.query(queryStr);

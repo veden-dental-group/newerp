@@ -56,7 +56,6 @@ export default function Orderstemp() {
           ...value,
           from,
           to,
-          orderstyle: 1,
           customer: Number(customer),
         })}`,
       );

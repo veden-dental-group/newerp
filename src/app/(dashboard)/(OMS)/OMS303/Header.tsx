@@ -3,25 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
-import { useCustomerList } from '@/features/customer/getCustomers';
 
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LabSelect from '@/components/LabSelect';
 import TableHeaderContainer from '@/components/table/TableHeaderContainer';
 import TableHeaderOption from '@/components/table/TableHeaderOption';
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { DateRangePicker } from '@/components/ui/daterangepicker';
 import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import LabSelect from '@/components/LabSelect';
-
-import { FaCheck } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { GrSend } from 'react-icons/gr';
-import { PiCaretUpDownBold } from 'react-icons/pi';
-import { twMerge } from 'tailwind-merge';
 
 type Props = {
   submitHandler: (value: HeaderForm) => void;
@@ -34,6 +23,8 @@ const formSchema = z.object({
   filename: asOptionalField(z.string()),
   customer: asOptionalField(z.string()),
   orderstatus: asOptionalField(z.string()),
+  orderstyle: asOptionalField(z.string()),
+  serial: asOptionalField(z.string()),
 });
 
 export type HeaderForm = z.infer<typeof formSchema>;
@@ -43,6 +34,8 @@ export const HeaderFormDefaultValue: HeaderForm = {
   filename: '',
   customer: undefined,
   orderstatus: 'All',
+  orderstyle: 'All',
+  serial: '',
 };
 
 const statusOptions = [
@@ -52,6 +45,13 @@ const statusOptions = [
   { name: 'Shipped', value: 'S' },
   { name: 'Cancelled', value: 'C' },
   { name: 'On Hold', value: 'O' },
+];
+
+const styleOptions = [
+  { name: '數位+設計', value: 'All' },
+  { name: '數位', value: '1' },
+  { name: '僅設計', value: '3' },
+  { name: '實體', value: '2' },
 ];
 
 const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
@@ -69,6 +69,16 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
               field={field}
               className="text-primary"
               resetDate={() => form.setValue('date', { from: undefined, to: undefined })}
+            />
+          )}
+        </TableHeaderOption>
+        <TableHeaderOption option="serial" control={form.control} label="Serial">
+          {(field) => (
+            <Input
+              type="text"
+              placeholder={'serial'}
+              className="mr-2 w-24 rounded-md bg-white text-sm text-primary placeholder:text-primary/50"
+              {...field}
             />
           )}
         </TableHeaderOption>
@@ -98,11 +108,29 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
         <TableHeaderOption option="orderstatus" control={form.control} label="狀態">
           {(field) => (
             <Select defaultValue={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-48 border-0 bg-white text-sm text-primary focus-visible:ring-0 focus-visible:ring-offset-0">
+              <SelectTrigger className="w-32 border-0 bg-white text-sm text-primary focus-visible:ring-0 focus-visible:ring-offset-0">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((el, i) => {
+                  return (
+                    <SelectItem key={i} value={el.value} className="text-primary">
+                      {el.name}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          )}
+        </TableHeaderOption>
+        <TableHeaderOption option="orderstyle" control={form.control} label="類型">
+          {(field) => (
+            <Select defaultValue={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="w-32 border-0 bg-white text-sm text-primary focus-visible:ring-0 focus-visible:ring-offset-0">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                {styleOptions.map((el, i) => {
                   return (
                     <SelectItem key={i} value={el.value} className="text-primary">
                       {el.name}
