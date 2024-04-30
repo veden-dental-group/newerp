@@ -28,9 +28,28 @@ export const POST = async (request: Request) => {
 
       if (selectOrders && selectOrders.length) {
         // manualUpdateMany 更新newcsp單
-        const updateOrders = selectOrders.filter((el: any) => el.CSP_UUID !== null);
+        const updateOrders = selectOrders.filter((el: any) => el.CSP_SERIAL_NO !== null);
         const res = await api.request({ url: '/order/tempUpdate', method: 'POST', data: { updateOrders } });
-        return NextResponse.json({ res: res.data });
+        let countUpdate = 0;
+        if (res.data) {
+          const { cspOrders } = res.data;
+          for (const cspOrder of cspOrders) {
+            const { erpSerialNumber, orderId } = cspOrder;
+            if (!erpSerialNumber || !orderId) continue;
+            const queryStr = `
+            UPDATE
+                csp_order_header_temp
+            SET 
+                CSP_UUID='${orderId}', TRANS_FLAG='T',
+                TRANS_DATE=TO_DATE('${dayjs().format('YYYY-MM-DD HH:mm:ss')}','YYYY-MM-DD hh24:mi:ss')
+            WHERE
+                CSP_SERIAL_NO=${erpSerialNumber} `;
+
+            const upd = await oracleCsp.query(queryStr, { type: QueryTypes.UPDATE });
+            if (upd) countUpdate++;
+          }
+        }
+        return NextResponse.json({ res: res.data, countUpdate });
       } else {
         return NextResponse.json('Orders not found');
       }
