@@ -21,7 +21,9 @@ export const POST = async (request: Request) => {
       LEFT JOIN csp.csp_order_line_temp b 
       ON a.order_id = b.order_id AND b.order_line_no = 1 
       WHERE TRUNC(a.create_date) >= TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') 
-      AND TRUNC(a.create_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') `;
+      AND TRUNC(a.create_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') 
+      AND ROWNUM <= 1000
+      `;
 
       if (customer) queryStr += `AND csp_customer_id = ${customer} `;
       queryStr += ' ORDER BY a.csp_serial_no ';
