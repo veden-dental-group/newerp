@@ -48,7 +48,7 @@ const statusOptions = [
 ];
 
 const styleOptions = [
-  { name: '數位+設計', value: 'All' },
+  { name: '數位+設計', value: 'digital' },
   { name: '數位', value: '1' },
   { name: '僅設計', value: '3' },
   { name: '實體', value: '2' },

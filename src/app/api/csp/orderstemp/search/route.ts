@@ -39,9 +39,9 @@ export const GET = async (request: Request) => {
     if (rx) queryStr += `AND a.order_rx LIKE '%${rx}%' `;
     if (customer) queryStr += `AND a.csp_customer_id = ${customer} `;
     if (filename) queryStr += `AND a.csp_file_name LIKE '%${filename}%' `;
-    if (orderstyle && orderstyle !== 'All') {
+    if (orderstyle && orderstyle !== 'All' && orderstyle !== 'digital') {
       queryStr += `AND a.order_style_id = ${Number(orderstyle)} `;
-    } else {
+    } else if (orderstyle === 'digital') {
       queryStr += `AND a.order_style_id IN (1, 3) `;
     }
     if (orderstatus && orderstatus !== 'All') queryStr += `AND a.csp_order_status = '${orderstatus}' `;
