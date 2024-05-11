@@ -96,13 +96,20 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
   const handleUploadPDF = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      console.log(e.target.files[0], reader.readAsDataURL(e.target.files[0]));
-
-      const formData = new FormData();
-      formData.append('file', e.target.files[0]);
-      const res = await fetch('/api/pdf', { method: 'POST', body: formData });
-      console.log(await res.json());
+      const rx = [];
+      for (const file of Array.from(e.target.files)) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/pdf', { method: 'POST', body: formData });
+        const { text } = await res.json();
+        const regex = /CN\d{5}[\s\t]+\n/g;
+        const match = regex.exec(text);
+        const lastIndex = regex.lastIndex;
+        if (match) {
+          rx.push({ RX: match[0] });
+        }
+      }
+      console.table(rx);
 
       fileRef.current!.value = '';
     }
@@ -227,7 +234,7 @@ const Header: React.FC<Props> = ({ submitHandler, btnRef }) => {
                 <Input
                   ref={fileRef}
                   type="file"
-                  multiple={false}
+                  multiple={true}
                   className="hidden"
                   name="attachment"
                   id="attachment"

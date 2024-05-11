@@ -68,26 +68,34 @@ export const POST = async (req: Request) => {
 
     // Creates a write stream and copy stream asset's content to it
     const outputFilePath = `public/tmp/output.zip`;
-    console.log(`Saving asset at ${outputFilePath}`);
-
     const writeStream = fs.createWriteStream(outputFilePath);
-    streamAsset.readStream.pipe(writeStream);
-
-    let zip = new AdmZip(outputFilePath);
-    let jsondata = zip.readAsText('structuredData.json');
-    let data = JSON.parse(jsondata);
-    let outputText = '';
-    data.elements.forEach((el: any) => {
-      if (el.Text) {
-        outputText += `${el.Text}\n`;
-      }
+    const doStream = streamAsset.readStream.pipe(writeStream);
+    const text = await new Promise((resolve, reject) => {
+      doStream
+        .on('finish', () => {
+          console.log(`Saving asset at ${outputFilePath}`);
+          let zip = new AdmZip(outputFilePath);
+          let jsondata = zip.readAsText('structuredData.json');
+          let data = JSON.parse(jsondata);
+          let outputText = '';
+          data.elements.forEach((el: any) => {
+            if (el.Text) {
+              outputText += `${el.Text}\n`;
+            }
+          });
+          resolve(outputText);
+        })
+        .on('error', (err) => {
+          reject(err);
+        });
     });
-    return NextResponse.json({ outputText });
+
+    return NextResponse.json({ text });
   } catch (err) {
     if (err instanceof SDKError || err instanceof ServiceUsageError || err instanceof ServiceApiError) {
-      console.log('Exception encountered while executing operation', err);
+      console.error('Exception encountered while executing operation', err);
     } else {
-      console.log('Exception encountered while executing operation', err);
+      console.error('Other Error:', err);
     }
   } finally {
     readStream?.destroy();

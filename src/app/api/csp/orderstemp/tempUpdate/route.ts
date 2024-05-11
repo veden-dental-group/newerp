@@ -6,6 +6,7 @@ import { QueryTypes } from 'sequelize';
 const api = axios.create({
   baseURL: process.env.NEW_CSP_API,
   headers: { 'Content-Type': 'application/json' },
+  timeout: 600000,
 });
 
 export const POST = async (request: Request) => {
