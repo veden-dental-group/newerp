@@ -181,6 +181,7 @@ export default function Orderstemp() {
     if (status === 'S') label = 'Shipped';
     if (status === 'C') label = 'Cancelled';
     if (status === 'O') label = 'On Hold';
+    if (status === 'E') label = 'Extra File';
     return label;
   };
 
@@ -215,89 +216,83 @@ export default function Orderstemp() {
                     return el.key === 'ACTIONS' ? (
                       <TableCell className="p-1 text-center" key={el.key}>
                         <div className="flex items-center justify-center gap-1">
-                          <TooltipProvider delayDuration={500}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="pureIcon"
-                                  size="smicon"
-                                  onClick={() => {
-                                    const url: string = entry['CSP_FILE_URL'] || '';
-                                    const filename: string = entry['CSP_FILE_NAME'] || '';
-                                    if (url) {
-                                      const startIndex = url.indexOf('/newcsp/') + '/newcsp/'.length;
-                                      const newUrl = url.replace(filename, '').slice(startIndex);
-                                      const newFilename = encodeURIComponent(filename);
-                                      const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + newUrl + newFilename;
-                                      window.open(downloadUrl.replace(/\+/gm, ' '));
-                                    } else {
-                                      toast({
-                                        title: '檔案未同步到NAS!',
-                                        duration: 1500,
-                                        variant: 'destructive',
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <ImDownload />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>NAS</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="pureIcon"
-                                  size="smicon"
-                                  onClick={() => {
-                                    const url: string = entry['CSP_FILE_URL'] || '';
-                                    const filename: string = entry['CSP_FILE_NAME'] || '';
-                                    if (url && filename) {
-                                      const newUrl = url.replace(filename, '');
-                                      const newFilename = encodeURIComponent(filename);
-                                      router.replace(newUrl + newFilename);
-                                    } else {
-                                      toast({
-                                        title: '檔案未同步到s3!',
-                                        duration: 1500,
-                                        variant: 'destructive',
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <TbWorldDownload />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>s3</TooltipContent>
-                            </Tooltip>
+                          {entry['CSP_ORDER_STATUS'] === 'C' ? null : (
+                            <TooltipProvider delayDuration={500}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="pureIcon"
+                                    size="smicon"
+                                    onClick={() => {
+                                      const url: string = entry['CSP_FILE_URL'] || '';
+                                      const filename: string = entry['CSP_FILE_NAME'] || '';
+                                      if (url) {
+                                        const startIndex = url.indexOf('/newcsp/') + '/newcsp/'.length;
+                                        const newUrl = url.replace(filename, '').slice(startIndex);
+                                        const newFilename = encodeURIComponent(filename);
+                                        const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + newUrl + newFilename;
+                                        window.open(downloadUrl.replace(/\+/gm, ' '));
+                                      } else {
+                                        toast({
+                                          title: '檔案未同步到NAS!',
+                                          duration: 1500,
+                                          variant: 'destructive',
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <ImDownload />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>NAS</TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="pureIcon"
+                                    size="smicon"
+                                    onClick={() => {
+                                      const url: string = entry['CSP_FILE_URL'] || '';
+                                      const filename: string = entry['CSP_FILE_NAME'] || '';
+                                      if (url && filename) {
+                                        const newUrl = url.replace(filename, '');
+                                        const newFilename = encodeURIComponent(filename);
+                                        router.replace(newUrl + newFilename);
+                                      } else {
+                                        toast({
+                                          title: '檔案未同步到s3!',
+                                          duration: 1500,
+                                          variant: 'destructive',
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <TbWorldDownload />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>s3</TooltipContent>
+                              </Tooltip>
 
-                            {entry['CSP_ORDER_STATUS'] === 'C' ? null : (
-                              <>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant="pureIcon" size="smicon" onClick={() => handleUpdateDetail(entry)}>
+                                    <GrSend />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>更新</TooltipContent>
+                              </Tooltip>
+                              {entry['TRANS_FLAG'] === 'F' && !entry['CSP_UUID'] ? (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button variant="pureIcon" size="smicon" onClick={() => handleUpdateDetail(entry)}>
-                                      <GrSend />
+                                    <Button variant="pureIcon" size="smicon" onClick={() => handelManualCreate(entry)}>
+                                      <GrDocumentUpdate />
                                     </Button>
                                   </TooltipTrigger>
-                                  <TooltipContent>更新</TooltipContent>
+                                  <TooltipContent>生成</TooltipContent>
                                 </Tooltip>
-                                {entry['TRANS_FLAG'] === 'F' && !entry['CSP_UUID'] ? (
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant="pureIcon"
-                                        size="smicon"
-                                        onClick={() => handelManualCreate(entry)}
-                                      >
-                                        <GrDocumentUpdate />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>生成</TooltipContent>
-                                  </Tooltip>
-                                ) : null}
-                              </>
-                            )}
-                          </TooltipProvider>
+                              ) : null}
+                            </TooltipProvider>
+                          )}
                         </div>
                       </TableCell>
                     ) : (
@@ -326,7 +321,7 @@ export default function Orderstemp() {
                                 <ImListNumbered className="cursor-pointer text-primary hover:text-pin" />
                               </>
                             ) : el.key === 'CSP_ORDER_STATUS' ? (
-                              <span>{transStatus(val)}</span>
+                              <span className={val === 'C' ? 'text-red-500' : ''}>{transStatus(val)}</span>
                             ) : (
                               <span>{val}</span>
                             )}
