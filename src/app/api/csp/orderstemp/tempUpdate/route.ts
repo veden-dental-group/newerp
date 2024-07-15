@@ -23,7 +23,7 @@ export const POST = async (request: Request) => {
       WHERE TRUNC(a.create_date) >= TO_DATE(${dayjs(from).format('YYYYMMDD')}, 'YYYYMMDD') 
       AND TRUNC(a.create_date) <= TO_DATE(${dayjs(to).format('YYYYMMDD')}, 'YYYYMMDD') 
       AND a.TRANS_FLAG = 'F' 
-      AND ROWNUM <= 1000 
+      AND ROWNUM <= 500 
       `;
 
       if (customer) queryStr += `AND a.csp_customer_id = ${customer} `;
