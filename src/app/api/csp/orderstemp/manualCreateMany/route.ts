@@ -16,7 +16,7 @@ export const POST = async (request: Request) => {
       const checkLength = `SELECT COUNT(1) len FROM csp.csp_order_header_temp WHERE trans_flag='F' `;
       const getLength = await oracleCsp.query(checkLength, { type: QueryTypes.SELECT });
       const { LEN }: any = getLength[0];
-      const runtimes = Math.ceil(LEN / 1000);
+      const runtimes = Math.ceil(LEN / 500);
 
       let countCreate = 0;
       let countUpdate = 0;
@@ -28,7 +28,7 @@ export const POST = async (request: Request) => {
         ON a.csp_customer_id = c.customer_id 
         LEFT JOIN csp.csp_order_line_temp b 
         ON a.order_id = b.order_id AND b.order_line_no = 1 
-        WHERE a.trans_flag = 'F' AND ROWNUM <= 1000 `;
+        WHERE a.trans_flag = 'F' AND ROWNUM <= 500 `;
 
         queryStr += ' ORDER BY a.csp_serial_no ';
         const selectOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
