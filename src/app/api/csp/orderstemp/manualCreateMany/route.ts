@@ -35,7 +35,7 @@ export const POST = async (request: Request) => {
 
         if (selectOrders && selectOrders.length) {
           // manualCreateMany 建newcsp單  沒有CSP_UUID = newcsp尚未建單
-          const manualOrders = selectOrders.filter((el: any) => el.CSP_UUID === null);
+          const manualOrders = selectOrders.filter((el: any) => !el.CSP_UUID);
           const res = await api.request({ url: '/order/manualCreateMany', method: 'POST', data: { manualOrders } });
           if (res.data) {
             const { cspOrders } = res.data;
@@ -59,7 +59,7 @@ export const POST = async (request: Request) => {
           }
 
           // manualUpdateMany 更新newcsp單
-          const updateOrders = selectOrders.filter((el: any) => el.CSP_UUID !== null);
+          const updateOrders = selectOrders.filter((el: any) => el.CSP_UUID);
           const res2 = await api.request({ url: '/order/manualUpdateMany', method: 'POST', data: { updateOrders } });
           if (res2.data) {
             const { cspOrders } = res2.data;
