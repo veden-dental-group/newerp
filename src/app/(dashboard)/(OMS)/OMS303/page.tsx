@@ -231,7 +231,15 @@ export default function Orderstemp() {
                                         const newUrl = url.replace(filename, '').slice(startIndex);
                                         const newFilename = encodeURIComponent(filename);
                                         const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + newUrl + newFilename;
-                                        window.open(downloadUrl.replace(/\+/gm, ' '));
+                                        const a = document.createElement('a');
+                                        const link = window.URL.createObjectURL(
+                                          new Blob([downloadUrl.replace(/\+/gm, ' ')], { type: 'text/plain' }),
+                                        );
+                                        a.href = link;
+                                        a.download = entry['CSP_SERIAL_NO'];
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
                                       } else {
                                         toast({
                                           title: '檔案未同步到NAS!',
