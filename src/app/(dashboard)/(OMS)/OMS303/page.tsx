@@ -232,10 +232,7 @@ export default function Orderstemp() {
                                         const newFilename = encodeURIComponent(filename);
                                         const downloadUrl = process.env.NEXT_PUBLIC_NAS_URL + newUrl + newFilename;
                                         const a = document.createElement('a');
-                                        const link = window.URL.createObjectURL(
-                                          new Blob([downloadUrl.replace(/\+/gm, ' ')], { type: 'text/plain' }),
-                                        );
-                                        a.href = link;
+                                        a.href = downloadUrl.replace(/\+/gm, ' ');
                                         a.download = entry['CSP_SERIAL_NO'];
                                         document.body.appendChild(a);
                                         a.click();
