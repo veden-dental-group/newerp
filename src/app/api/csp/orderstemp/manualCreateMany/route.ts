@@ -1,8 +1,10 @@
-import { oracleCsp } from '@/lib/sequelize';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { NextResponse } from 'next/server';
 import { QueryTypes } from 'sequelize';
+
+import { oracleCsp } from '@/lib/sequelize';
+
 const api = axios.create({
   baseURL: process.env.NEW_CSP_API,
   headers: { 'Content-Type': 'application/json' },
@@ -20,18 +22,20 @@ export const POST = async (request: Request) => {
 
       let countCreate = 0;
       let countUpdate = 0;
+      let currentCursor: number | null = null;
       for (let i = 0; i < runtimes; i++) {
-        let queryStr = `
+        const queryStr: string = `
         SELECT a.*, b.product_name2, b.order_line_qty, c.customer_code, c.customer_short_name 
         FROM csp.csp_order_header_temp a 
         JOIN erp.oms_customer_header  c 
         ON a.csp_customer_id = c.customer_id 
         LEFT JOIN csp.csp_order_line_temp b 
         ON a.order_id = b.order_id AND b.order_line_no = 1 
-        WHERE a.trans_flag = 'F' AND ROWNUM <= 250 `;
-
-        queryStr += ' ORDER BY a.csp_serial_no ';
-        const selectOrders = await oracleCsp.query(queryStr, { type: QueryTypes.SELECT });
+        WHERE a.trans_flag = 'F' ${
+          currentCursor !== null ? `AND a.csp_serial_no > ${currentCursor} ` : ''
+        }AND ROWNUM <= 250 ORDER BY a.csp_serial_no`;
+        const selectOrders = await oracleCsp.query<{ csp_serial_no: number }>(queryStr, { type: QueryTypes.SELECT });
+        currentCursor = selectOrders.length > 0 ? selectOrders[selectOrders.length - 1].csp_serial_no : null;
 
         if (selectOrders && selectOrders.length) {
           // manualCreateMany 建newcsp單  沒有CSP_UUID = newcsp尚未建單
