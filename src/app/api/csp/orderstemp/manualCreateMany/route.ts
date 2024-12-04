@@ -34,8 +34,8 @@ export const POST = async (request: Request) => {
         WHERE a.trans_flag = 'F' ${
           currentCursor !== null ? `AND a.csp_serial_no > ${currentCursor} ` : ''
         }AND ROWNUM <= 250 ORDER BY a.csp_serial_no`;
-        const selectOrders = await oracleCsp.query<{ csp_serial_no: number }>(queryStr, { type: QueryTypes.SELECT });
-        currentCursor = selectOrders.length > 0 ? selectOrders[selectOrders.length - 1].csp_serial_no : null;
+        const selectOrders = await oracleCsp.query<{ CSP_SERIAL_NO: number }>(queryStr, { type: QueryTypes.SELECT });
+        currentCursor = selectOrders.length > 0 ? selectOrders[selectOrders.length - 1].CSP_SERIAL_NO : null;
 
         if (selectOrders && selectOrders.length) {
           // manualCreateMany 建newcsp單  沒有CSP_UUID = newcsp尚未建單
