@@ -32,9 +32,9 @@ export enum OrderStatus {
 }
 
 export enum OrderType {
-  DIGITAL = 'digital',
-  CONVENTIONAL = 'conventional',
-  DESIGN = 'design',
+  DIGITAL = 'Digital',
+  CONVENTIONAL = 'Conventional',
+  DESIGN = 'Design',
 }
 
 export enum AnnouncementType {

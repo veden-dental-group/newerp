@@ -1,5 +1,3 @@
-import { asOptionalField } from '@/lib/zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
@@ -11,6 +9,8 @@ import { DateRangePicker } from '@/components/ui/daterangepicker';
 import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { asOptionalField } from '@/lib/zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type Props = {
   submitHandler: (value: HeaderForm) => void;
@@ -48,7 +48,7 @@ const statusOptions = [
 ];
 
 const styleOptions = [
-  { name: '數位+設計', value: 'digital' },
+  { name: '數位+設計', value: 'Digital' },
   { name: '數位', value: '1' },
   { name: '僅設計', value: '3' },
   { name: '實體', value: '2' },

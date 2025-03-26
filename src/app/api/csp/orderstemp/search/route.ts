@@ -1,11 +1,12 @@
-import { oracleCsp } from '@/lib/sequelize';
+import dayjs from 'dayjs';
+import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
 import { QueryTypes } from 'sequelize';
-import { getServerSession } from 'next-auth';
+
 import { OPTIONS } from '@/app/api/auth/[...nextauth]/authOptions';
 import { searchParamsParser } from '@/lib/searchParamsParser';
-import dayjs from 'dayjs';
+import { oracleCsp } from '@/lib/sequelize';
 
 export const GET = async (request: Request) => {
   const session = await getServerSession(OPTIONS);
@@ -39,9 +40,9 @@ export const GET = async (request: Request) => {
     if (rx) queryStr += `AND a.order_rx LIKE '%${rx}%' `;
     if (customer) queryStr += `AND a.csp_customer_id = ${customer} `;
     if (filename) queryStr += `AND a.csp_file_name LIKE '%${filename}%' `;
-    if (orderstyle && orderstyle !== 'All' && orderstyle !== 'digital') {
+    if (orderstyle && orderstyle !== 'All' && orderstyle !== 'Digital') {
       queryStr += `AND a.order_style_id = ${Number(orderstyle)} `;
-    } else if (orderstyle === 'digital') {
+    } else if (orderstyle === 'Digital') {
       queryStr += `AND a.order_style_id IN (1, 3) `;
     }
     if (orderstatus && orderstatus !== 'All') queryStr += `AND a.csp_order_status = '${orderstatus}' `;

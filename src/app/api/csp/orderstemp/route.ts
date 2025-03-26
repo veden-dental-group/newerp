@@ -1,8 +1,9 @@
-import { oracleCsp } from '@/lib/sequelize';
 import dayjs from 'dayjs';
 import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
 import { QueryTypes } from 'sequelize';
+
+import { oracleCsp } from '@/lib/sequelize';
 
 export const POST = async (req: Request) => {
   const { csp_order_id, company_id, customer_id, csp_file_url, csp_file_name, category, csp_local_date } =
@@ -14,9 +15,9 @@ export const POST = async (req: Request) => {
   try {
     let style_id = 1;
     if (category) {
-      if (category === 'digital') style_id = 1;
-      if (category === 'conventional') style_id = 2;
-      if (category === 'design') style_id = 3;
+      if (category === 'Digital') style_id = 1;
+      if (category === 'Conventional') style_id = 2;
+      if (category === 'Design') style_id = 3;
     }
     const findQuery = `SELECT * FROM csp.csp_order_header_temp WHERE CSP_UUID='${csp_order_id}' `;
     const findOrder = await oracleCsp.query(findQuery, { type: QueryTypes.SELECT });
