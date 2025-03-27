@@ -35,6 +35,7 @@ export enum OrderType {
   DIGITAL = 'Digital',
   CONVENTIONAL = 'Conventional',
   DESIGN = 'Design',
+  EC = 'EC',
 }
 
 export enum AnnouncementType {
